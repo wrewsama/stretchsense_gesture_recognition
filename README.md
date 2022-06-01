@@ -1,2 +1,2 @@
-# stretchsense_gesture_recognition
-Collecting data from stretchsense sensors and using it to train neural networks
+# Stretchsense Gesture Recognition
+This project aims to collect data from stretchsense sensors and use it to train neural networks to in turn recognise hand gestures.
