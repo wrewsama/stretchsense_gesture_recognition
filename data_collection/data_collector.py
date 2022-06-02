@@ -1,7 +1,7 @@
 import csv
+import time
 from typing import List, Tuple
 
-from torch import ge
 from peripheral import bluetooth_handler
 from peripheral import stretchsense_peripheral as ssp
 
@@ -41,19 +41,21 @@ class DataCollector:
         """
 
         # Connect to peripheral
-        self._connect()
+        if self._connect():
 
-        # Get required data
-        inputs, targets = self._collect_data()
+            # Get required data
+            inputs, targets = self._collect_data()
 
-        # Save as csv
-        self._save_csv(inputs, targets)
+            # Save as csv
+            self._save_csv(inputs, targets)
     
-    def _connect(self) -> None:
+    def _connect(self) -> bool:
         """Connects to a peripheral and sets up the instance fields."""
 
         self._handler = bluetooth_handler.BluetoothHandler("")
         self._peripheral = self._handler.connect_peripheral()
+
+        return self._peripheral is not None
 
     def _collect_data(self) -> Tuple[List[List[float]], List[str]]:
         """Collects the required data."""
@@ -67,6 +69,11 @@ class DataCollector:
             # Repeat num_sets times
             for gesture in self._gestures:
                 # For each gesture,
+                # Display gesture name
+                print(f"Current gesture: {gesture}")
+                time.sleep(2)
+
+                # Collect data for given gesture
                 rep_count = 0
                 while rep_count < self._num_reps:
                     # For each rep,
@@ -104,7 +111,7 @@ class DataCollector:
                    "sensor7",
                    ]
 
-        with open("data/{filename}", "w") as data_file:
+        with open(f"data/{self._filename}", "w") as data_file:
             # Instantiate csv writer
             csv_writer = csv.writer(data_file)
 
@@ -124,7 +131,7 @@ def main():
     gestures = ["rock",
                 "paper",
                 "scissors",]
-    collector = DataCollector("example_dataset", 100, 1, gestures)
+    collector = DataCollector("example_dataset", 300, 1, gestures)
 
     # Run the collector
     collector.run()

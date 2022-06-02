@@ -18,14 +18,9 @@ class BluetoothHandler:
     def __init__(self, pkg_directory: str):
         self._pkg_directory: str = pkg_directory
 
-        # Get name of known peripherals from yaml file
-        known_peripherals_yaml = open(self._pkg_directory + 
-                                      "/src/data/known_peripherals.yaml")
-
         # Store known peripherals in a dict with addresses as keys
-        # and names as values
-        self._known_peripherals: Dict = yaml.load(known_peripherals_yaml,
-                                                  Loader=yaml.FullLoader)
+        # and names as values. For this project, there are no known peripherals
+        self._known_peripherals: Dict = {}
 
     def _get_available_peripherals(self) -> List:
         """Gets a list of the available Stretchsense Peripherals."""
