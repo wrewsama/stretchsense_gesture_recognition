@@ -67,7 +67,7 @@ class DataCollector:
         # Main data collection loop
         for _ in range(self._num_sets):
             # Repeat num_sets times
-            for gesture in self._gestures:
+            for idx, gesture in enumerate(self._gestures):
                 # For each gesture,
                 # Display gesture name
                 print(f"Current gesture: {gesture}")
@@ -85,7 +85,7 @@ class DataCollector:
                         continue # If invalid, skip
                     
                     # Update targets
-                    targets.append(gesture)
+                    targets.append([idx, gesture])
 
                     # Update inputs as lists
                     inputs.append(sensor_input.tolist())
@@ -98,10 +98,11 @@ class DataCollector:
 
     def _save_csv(self,
                     input_data: List[List[float]],
-                    target_data: List[str]) -> None:
+                    target_data: List[List[str]]) -> None:
         """Creates a csv file to store the collected data."""
         
-        headers = ["gesture_name",
+        headers = ["gesture_index",
+                   "gesture_name",
                    "sensor1",
                    "sensor2",
                    "sensor3",
@@ -111,7 +112,7 @@ class DataCollector:
                    "sensor7",
                    ]
 
-        with open(f"data/{self._filename}", "w") as data_file:
+        with open(f"data/{self._filename}.csv", "w+") as data_file:
             # Instantiate csv writer
             csv_writer = csv.writer(data_file)
 
@@ -121,7 +122,7 @@ class DataCollector:
             # Write for each sample
             total_num_samples = self._num_reps * self._num_sets * len(self._gestures)
             for i in range(total_num_samples):
-                row = [target_data[i], *input_data[i]]
+                row = [*target_data[i], *input_data[i]]
                 csv_writer.writerow(row)
 
 def main():
