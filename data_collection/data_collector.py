@@ -132,7 +132,7 @@ def main():
     gestures = ["rock",
                 "paper",
                 "scissors",]
-    collector = DataCollector("example_dataset", 300, 1, gestures)
+    collector = DataCollector("example_dataset", 500, 10, gestures)
 
     # Run the collector
     collector.run()
