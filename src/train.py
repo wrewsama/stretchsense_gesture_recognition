@@ -43,9 +43,10 @@ class Trainer:
                 self._optimiser.zero_grad()
 
             # Validation
-            result = self._evaluate(self._model, self._val_loader)
-            self._model.epoch_end(epoch, result)
-            history.append(result)
+            if epoch % 10 == 0:
+                result = self._evaluate(self._model, self._val_loader)
+                self._model.epoch_end(epoch, result)
+                history.append(result)
 
         return history
 
@@ -61,5 +62,5 @@ if __name__ == "__main__":
     data = "data/example_dataset.csv"
     model = logistic_regression.LogisticRegressionModel(7, 3)
     optimiser_function = torch.optim.SGD
-    trainer = Trainer(data, 128, 50, 1e-6, model, optimiser_function)
+    trainer = Trainer(data, 128, 500, 1e-7, model, optimiser_function)
     trainer.train()

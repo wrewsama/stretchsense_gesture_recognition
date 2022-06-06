@@ -92,6 +92,9 @@ class DataCollector:
 
                     # Increment counter
                     rep_count += 1
+                
+                print("gesture completed")
+                time.sleep(1)
         
         return inputs, targets
 
