@@ -14,6 +14,7 @@ class LogisticRegressionModel(torch.nn.Module):
     def __init__(self,
                  num_sensors: int,
                  num_gestures: int):
+        super().__init__()
         self.model = torch.nn.Linear(num_sensors, num_gestures)
 
     def forward(self, input: torch.tensor) -> torch.tensor:
