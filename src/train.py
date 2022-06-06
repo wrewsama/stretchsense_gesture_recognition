@@ -62,5 +62,5 @@ if __name__ == "__main__":
     data = "data/example_dataset.csv"
     model = logistic_regression.LogisticRegressionModel(7, 3)
     optimiser_function = torch.optim.SGD
-    trainer = Trainer(data, 128, 500, 1e-7, model, optimiser_function)
+    trainer = Trainer(data, 128, 500, 1e-4, model, optimiser_function)
     trainer.train()
