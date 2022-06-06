@@ -1,5 +1,6 @@
 from typing import Dict, List, Tuple
 import torch
+import torch.nn.functional as F
 
 class LogisticRegressionModel(torch.nn.Module):
     """A logistic regression using one Linear Transformation.
@@ -23,22 +24,49 @@ class LogisticRegressionModel(torch.nn.Module):
                       batch: Tuple[torch.tensor, torch.tensor]
                      ) -> torch.tensor:
         """Calculate the loss."""
-        pass
+
+        sensors, labels = batch
+        output = self(sensors)
+        return F.cross_entropy(output, labels)
 
     def validation_step(self,
                         batch: Tuple[torch.tensor, torch.tensor]
                         ) -> Dict[str, torch.tensor]:
         """Calculate the loss and accuracy for a batch."""
-        pass
+
+        sensors, labels = batch
+        output = self(sensors)
+        loss = F.cross_entropy(output, labels)
+        accuracy = self._calc_accuracy(output, labels)
+        return {"validation_loss": loss,
+                "validation_accuracy": accuracy}
+
+    def _calc_accuracy(self,
+                       outputs: torch.tensor,
+                       labels: torch.tensor) -> torch.tensor:
+        """Helper method to calculate the accuracy of a batch of data."""
+
+        _, predictions = torch.max(outputs, dim=1)
+        return torch.tensor(torch.sum(predictions == labels).item()
+                            / len(predictions))
 
     def validation_epoch_end(self,
                              outputs: List) -> Dict[str, int]:
         """Calculate the loss and accuracy for the whole validation set."""
-        pass
+        
+        batch_losses = [output["validation_loss"] for output in outputs]
+        epoch_loss = torch.stack(batch_losses).mean()
+
+        batch_accs = [output["validation_accuracy"] for output in outputs]
+        epoch_acc = torch.stack(batch_accs).mean()
+
+        return {"validation_loss": epoch_loss.item(),
+                "validation_accuracy": epoch_acc.item()}
 
     def epoch_end(self,
                   epoch: int,
                   result: Dict[str, int]) -> None:
-        pass
 
-    
+        val_loss = result["validation_loss"]
+        val_acc = result["validation_accuracy"]
+        print(f"Epoch [{epoch}], validation loss: {val_loss}, validation accuracy: {val_acc}")
