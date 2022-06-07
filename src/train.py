@@ -82,6 +82,7 @@ class Trainer:
 if __name__ == "__main__":
     data = "data/example_dataset.csv"
     model = feed_forward.FeedForwardModel(7, 3, 32)
+    simp_model = logistic_regression.LogisticRegressionModel(7,3)
     optimiser_function = torch.optim.SGD
     trainer = Trainer(data, 128, 500, 1e-5, model, optimiser_function)
     history = trainer.train()
