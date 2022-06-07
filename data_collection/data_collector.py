@@ -73,6 +73,12 @@ class DataCollector:
                 print(f"Current gesture: {gesture}")
                 time.sleep(2)
 
+                """I REALLY DK ANYMORE LMAOOO"""
+                for _ in range(500):
+                    self._peripheral.read_sensors()
+
+                print("Recording now")
+
                 # Collect data for given gesture
                 rep_count = 0
                 while rep_count < self._num_reps:
@@ -135,7 +141,7 @@ def main():
     gestures = ["rock",
                 "paper",
                 "scissors",]
-    collector = DataCollector("example_dataset", 500, 10, gestures)
+    collector = DataCollector("example_dataset", 50, 2, gestures)
 
     # Run the collector
     collector.run()
