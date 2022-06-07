@@ -2,7 +2,7 @@
 import torch
 from torch.utils.data import random_split, DataLoader
 from typing import List, Dict
-from models import logistic_regression
+from models import logistic_regression, feed_forward
 import dataset
 import matplotlib.pyplot as plt
 
@@ -81,7 +81,7 @@ class Trainer:
 
 if __name__ == "__main__":
     data = "data/example_dataset.csv"
-    model = logistic_regression.LogisticRegressionModel(7, 3)
+    model = feed_forward.FeedForwardModel(7, 3, 32)
     optimiser_function = torch.optim.SGD
     trainer = Trainer(data, 128, 500, 1e-5, model, optimiser_function)
     history = trainer.train()
