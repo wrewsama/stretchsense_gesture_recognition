@@ -74,7 +74,7 @@ class DataCollector:
                 time.sleep(2)
 
                 """I REALLY DK ANYMORE LMAOOO"""
-                for _ in range(500):
+                for _ in range(300):
                     self._peripheral.read_sensors()
 
                 print("Recording now")
@@ -141,7 +141,7 @@ def main():
     gestures = ["rock",
                 "paper",
                 "scissors",]
-    collector = DataCollector("example_dataset", 50, 2, gestures)
+    collector = DataCollector("example_dataset", 500, 3, gestures)
 
     # Run the collector
     collector.run()
