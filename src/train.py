@@ -4,6 +4,7 @@ from torch.utils.data import random_split, DataLoader
 from typing import List, Dict
 from models import logistic_regression
 import dataset
+import matplotlib.pyplot as plt
 
 class Trainer:
     """This class is responsible for training a selected model."""
@@ -58,9 +59,30 @@ class Trainer:
         outputs = [model.validation_step(batch) for batch in val_loader]
         return model.validation_epoch_end(outputs)
 
+    def visualise_loss(self, history: List) -> None:
+        """Plots a graph of the loss over num of epochs."""
+
+        losses = [x["validation_loss"] for x in history]
+        plt.plot(losses, "-x")
+        plt.xlabel("epoch")
+        plt.ylabel("loss")
+        plt.title("Loss vs Number of Epochs")
+        plt.show()
+
+    def visualise_acc(self, history: List) -> None:
+        """Plots a graph of the accuracies over num of epochs."""
+
+        losses = [x["validation_accuracy"] for x in history]
+        plt.plot(losses, "-x")
+        plt.xlabel("epoch")
+        plt.ylabel("acc")
+        plt.title("Accuracy vs Number of Epochs")
+        plt.show()
+
 if __name__ == "__main__":
     data = "data/example_dataset.csv"
     model = logistic_regression.LogisticRegressionModel(7, 3)
     optimiser_function = torch.optim.SGD
-    trainer = Trainer(data, 128, 500, 1e-4, model, optimiser_function)
-    trainer.train()
+    trainer = Trainer(data, 128, 500, 1e-5, model, optimiser_function)
+    history = trainer.train()
+    trainer.visualise_acc(history)
