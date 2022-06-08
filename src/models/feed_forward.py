@@ -24,9 +24,9 @@ class FeedForwardModel(torch.nn.Module):
             torch.nn.Linear(learning_capacity, num_gestures)
         )
 
-    def forward(self, input: torch.tensor) -> torch.tensor:
+    def forward(self, input_: torch.tensor) -> torch.tensor:
         """Apply the model to transform the input data."""
-        return self.model(input)
+        return self.model(input_)
 
     def training_step(self,
                       batch: Tuple[torch.tensor, torch.tensor]
