@@ -87,3 +87,4 @@ if __name__ == "__main__":
     trainer = Trainer(data, 128, 500, 1e-5, model, optimiser_function)
     history = trainer.train()
     trainer.visualise_acc(history)
+    torch.save(model.state_dict(), "trained_models/example_model.pth")
