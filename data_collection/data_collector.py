@@ -25,7 +25,11 @@ class DataCollector:
                  num_reps: int,
                  num_sets: int,
                  gestures: List):
+
+        # The handler used to connect to Stretchsense peripherals via Bluetooth
         self._handler: bluetooth_handler.BluetoothHandler
+
+        # The peripheral used to collect sensor data
         self._peripheral: ssp.StretchSensePeripheral
 
         self._filename: str = filename
@@ -71,9 +75,9 @@ class DataCollector:
                 # For each gesture,
                 # Display gesture name
                 print(f"Current gesture: {gesture}")
-                time.sleep(2)
+                time.sleep(1)
 
-                """I REALLY DK ANYMORE LMAOOO"""
+                # Clear up the old sensor data
                 for _ in range(300):
                     self._peripheral.read_sensors()
 
