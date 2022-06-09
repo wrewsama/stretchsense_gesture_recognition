@@ -1,6 +1,5 @@
 """Script to get input from user and output the predicted gesture."""
 
-from pyrsistent import get_in
 import torch
 from typing import List
 from src.models import feed_forward
@@ -13,6 +12,10 @@ def connect_peripheral():
     return handler.connect_peripheral()
 
 def get_input(peripheral) -> List[int]:
+
+    for _ in range(500):
+        peripheral.read_sensors()
+
     return peripheral.read_sensors().tolist()
 
 def get_model() -> feed_forward.FeedForwardModel:
@@ -38,7 +41,8 @@ def main() -> None:
 
     gestures = get_gestures()
 
-    for _ in range(1000):
+    flag = True
+    while flag:
         testdata = get_input(peripheral)
 
         if testdata is None:
@@ -48,7 +52,11 @@ def main() -> None:
         resultidx = torch.argmax(output).item()
         result = gestures[resultidx]
         
-        print(result)
+        print(f"Detected gesture: {result}")
+        print("\n Again? [Y/N]: ")
+        if input() not in ["y", "Y"]:
+            flag = False
+            print("Exiting...")
 
 if __name__ == "__main__":
     main()
