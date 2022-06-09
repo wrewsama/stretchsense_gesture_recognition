@@ -3,7 +3,7 @@
 from bluepy import btle
 from abc import ABC
 import numpy as np
-from peripheral import stretchsense_delegate
+from . import stretchsense_delegate
 from typing import Optional
 
 class StretchSensePeripheral(btle.Peripheral, ABC):
