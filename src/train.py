@@ -2,6 +2,8 @@
 import torch
 from torch.utils.data import random_split, DataLoader
 from typing import List, Dict
+
+import yaml
 from models import logistic_regression, feed_forward
 import dataset
 import matplotlib.pyplot as plt
@@ -126,11 +128,36 @@ class Trainer:
 
 def main() -> None:
     # Set up parameters
-    data = "data/example_dataset.csv"
-    model = feed_forward.FeedForwardModel(7, 3, 32)
-    simp_model = logistic_regression.LogisticRegressionModel(7,3)
+    num_sensors = 0
+    num_gestures = 0
+    learning_cap = 0
+    data = ""
+    batch_size = 0
+    num_epochs = 0
+    lr = 0
+    model_path = ""
+    with open("src/config.yaml") as config:
+        configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
+
+        num_sensors = configyaml["general"]["num_sensors"]
+        num_gestures = len(configyaml["general"]["gestures"])
+        learning_cap = configyaml["hyperparams"]["learning_capacity"]
+        data = configyaml["filepaths"]["data"]
+        batch_size = configyaml["hyperparams"]["batch_size"]
+        num_epochs = configyaml["hyperparams"]["num_epochs"]
+        lr = configyaml["hyperparams"]["lr"]
+        model_path = configyaml["filepaths"]["trained_model"]
+
+    model = feed_forward.FeedForwardModel(num_sensors,
+                                          num_gestures,
+                                          learning_cap)
     optimiser_function = torch.optim.SGD
-    trainer = Trainer(data, 128, 500, 1e-5, model, optimiser_function)
+    trainer = Trainer(data,
+                      batch_size,
+                      num_epochs,
+                      lr,
+                      model,
+                      optimiser_function)
 
     # Train the model
     history = trainer.train()
@@ -139,7 +166,7 @@ def main() -> None:
     trainer.visualise_acc(history)
 
     # Save the model's parameters
-    torch.save(model.state_dict(), "trained_models/example_model.pth")
+    torch.save(model.state_dict(), model_path)
 
 if __name__ == "__main__":
     main()

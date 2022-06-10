@@ -2,6 +2,8 @@
 
 import torch
 from typing import List
+
+import yaml
 from src.models import feed_forward
 from data_collection.peripheral import bluetooth_handler
 
@@ -44,11 +46,26 @@ def get_model() -> feed_forward.FeedForwardModel:
         An instance of a trained model.
     """
 
+    # Get params from config file
+    num_sensors = 0
+    num_gestures = 0
+    learning_cap = 0
+    modelpath = ""
+    with open("src/config.yaml") as config:
+        configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
+
+        num_sensors = configyaml["general"]["num_sensors"]
+        num_gestures = len(configyaml["general"]["gestures"])
+        learning_cap = configyaml["hyperparams"]["learning_capacity"]
+        modelpath = configyaml["filepaths"]["trained_model"]
+
     # Instantiate model
-    model = feed_forward.FeedForwardModel(7, 3, 32)
+    model = feed_forward.FeedForwardModel(num_sensors,
+                                          num_gestures,
+                                          learning_cap)
 
     # Load in parameters from trained model
-    model.load_state_dict(torch.load("trained_models/example_model.pth"))
+    model.load_state_dict(torch.load(modelpath))
 
     # Return the model
     return model
@@ -56,15 +73,23 @@ def get_model() -> feed_forward.FeedForwardModel:
 def get_gestures() -> List[str]:
     """Gets the list of gestures the model was trained with."""
 
-    return ["rock",
-            "paper",
-            "scissors",]
+    # Getting list from config file
+    gestures = []
+    with open("src/config.yaml") as config:
+        configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
+        gestures = configyaml["general"]["gestures"]
+
+    return gestures
 
 def main() -> None:
     """The main script for the application."""
 
     # Connect to the peripheral
     peripheral = connect_peripheral()
+
+    # Check if peripheral is connected
+    if peripheral is None:
+        return
 
     # Get a trained model for predictions
     model = get_model()

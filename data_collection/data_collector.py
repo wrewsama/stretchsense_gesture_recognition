@@ -2,6 +2,8 @@ import csv
 import time
 from typing import List, Tuple
 
+import yaml
+
 from peripheral import bluetooth_handler
 from peripheral import stretchsense_peripheral as ssp
 
@@ -9,8 +11,8 @@ class DataCollector:
     """This class collects data from the Stretchsense Glove.
     
     Args:
-        filename:
-            A string specifying the name of the file the collected data
+        filepath:
+            A string specifying the path to the file the collected data
             will be stored in.
         num_reps:
             Number of samples taken for 1 set of a particular gesture.
@@ -21,7 +23,7 @@ class DataCollector:
     """
 
     def __init__(self,
-                 filename: str,
+                 filepath: str,
                  num_reps: int,
                  num_sets: int,
                  gestures: List):
@@ -32,7 +34,7 @@ class DataCollector:
         # The peripheral used to collect sensor data
         self._peripheral: ssp.StretchSensePeripheral
 
-        self._filename: str = filename
+        self._filepath: str = filepath
         self._num_reps: int = num_reps
         self._num_sets: int = num_sets
         self._gestures: List[str] = gestures
@@ -125,7 +127,7 @@ class DataCollector:
                    "sensor7",
                    ]
 
-        with open(f"data/{self._filename}.csv", "w+") as data_file:
+        with open(f"{self._filepath}", "w+") as data_file:
             # Instantiate csv writer
             csv_writer = csv.writer(data_file)
 
@@ -142,10 +144,18 @@ def main():
     """The main script for the data collection."""
 
     # Parameter setup
-    gestures = ["rock",
-                "paper",
-                "scissors",]
-    collector = DataCollector("example_dataset", 500, 3, gestures)
+    data_file_path = ""
+    num_reps = 0
+    num_sets = 0
+    gestures = []
+    with open("src/config.yaml") as config:
+        configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
+        data_file_path = configyaml["filepaths"]["data"]
+        num_reps = configyaml["general"]["num_reps"]
+        num_sets = configyaml["general"]["num_sets"]
+        gestures = configyaml["general"]["gestures"]
+
+    collector = DataCollector(data_file_path, num_reps, num_sets, gestures)
 
     # Run the collector
     collector.run()
