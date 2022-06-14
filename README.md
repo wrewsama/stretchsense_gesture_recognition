@@ -46,7 +46,12 @@ Inside `src/config.yaml`, choose the:
 * Number of repetitions and sets of data to be collected for each gesture
 
 ### Data Collector
-Run the data collector script with:
+1. Switch on the Stretchsense peripheral.
+2. Run the data collector script with:
 ```
 $ python3 data_collection/data_collector.py
 ```
+3. Select the peripheral by entering its corresponding number in the command line.
+4. Select which hand the glove is made for (i.e. right handed or left handed glove) by entering either `r` or `l` in the command line for right and left respectively. 
+5. When prompted, make the gestures shown and **hold** them until the next one is shown.
+6. The data file will be stored in the file path specified in `src/config.yaml`
