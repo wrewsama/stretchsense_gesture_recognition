@@ -31,3 +31,22 @@ Go to the directory and run
 $ sudo setcap 'cap_net_raw,cap_net_admin+eip' bluepy-helper
 ```
 
+## Usage
+### Config File
+Inside `src/config.yaml`, choose the:
+* Raw data file path
+* Trained model file path
+* Hyperparameters including:
+    * Number of epochs
+    * Learning rate
+    * Batch size
+    * Learning capacity
+* Number of sensors on the peripheral
+* The list of gestures
+* Number of repetitions and sets of data to be collected for each gesture
+
+### Data Collector
+Run the data collector script with:
+```
+$ python3 data_collection/data_collector.py
+```
