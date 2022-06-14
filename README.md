@@ -55,3 +55,9 @@ $ python3 data_collection/data_collector.py
 4. Select which hand the glove is made for (i.e. right handed or left handed glove) by entering either `r` or `l` in the command line for right and left respectively. 
 5. When prompted, make the gestures shown and **hold** them until the next one is shown.
 6. The data file will be stored in the file path specified in `src/config.yaml`
+
+## Credits
+Andrew Lo Zhi Sheng 
+
+[![Github Badge](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/wrewsama)
+[![LinkedIn Badge](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/andrewlozhisheng/)
