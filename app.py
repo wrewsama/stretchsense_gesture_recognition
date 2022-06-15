@@ -11,7 +11,7 @@ class NoPeripheralFoundError(Exception):
     """Raised when there is no peripheral to connect to."""
 
     def __init__(self):
-        super().__init__("No peripherals found")
+        super().__init__()
 
 class API:
     """API that gets input from user and outputs predicted gesture."""
@@ -24,11 +24,16 @@ class API:
         Raises:
             NoPeripheralFoundError when no peripherals can be found.
         """
-
+        # Attempt to connect to peripheral
         if self._connect_peripheral():
+            # If peripheral connected, 
+            # Load the trained model
             self._load_model()
+
+            # Load the list of gestures
             self._load_gestures()
         else:
+            # If no peripheral connected, raise error
             raise NoPeripheralFoundError()
 
     def _connect_peripheral(self) -> bool:
@@ -39,8 +44,13 @@ class API:
             False otherwise.
         """
 
+        # Create new handler
         handler = bluetooth_handler.BluetoothHandler("")
+
+        # Connect peripheral
         self._peripheral = handler.connect_peripheral()
+
+        # Return whether there is a connected peripheral
         return self._peripheral is not None
 
     def _load_model(self) -> None:
@@ -83,6 +93,7 @@ class API:
             configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
             gestures = configyaml["general"]["gestures"]
 
+        # Updating gestures field
         self._gestures = gestures
 
     def read_gesture(self) -> str:
@@ -94,8 +105,8 @@ class API:
         resultidx = torch.argmax(output).item()
         result = self._gestures[resultidx]
         
-        # Display the prediction
-        print(f"\nDetected gesture: {result}")
+        # Return the prediction
+        return result
 
     def _get_input(self) -> List[int]:
         """Gets the input data from the connected peripheral.
@@ -122,17 +133,22 @@ class API:
 
 def main() -> None:
     """Main app script."""
+
+    # Instantiate the api object
     api = API()
 
     try:
+        # Set up the object
         api.setup()
     except NoPeripheralFoundError as npfe:
+        # If no peripheral can be connected, quit
         return
 
     # Repeat until user decides to stop
     flag = True
     while flag:
-        api.read_gesture()
+        # Read and print gesture
+        print(api.read_gesture())
 
         # Checking if user wants to do another gesture
         print("\n Again? [Y/N]: ")
