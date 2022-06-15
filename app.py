@@ -7,109 +7,132 @@ import yaml
 from src.models import feed_forward
 from data_collection.peripheral import bluetooth_handler
 
-def connect_peripheral() -> None:
-    """Gets a Stretchsense peripheral for user input."""
+class NoPeripheralFoundError(Exception):
+    """Raised when there is no peripheral to connect to."""
 
-    handler = bluetooth_handler.BluetoothHandler("")
-    return handler.connect_peripheral()
+    def __init__(self):
+        super().__init__("No peripherals found")
 
-def get_input(peripheral) -> List[int]:
-    """Gets the input data from a given peripheral.
-    
-    Args:
-        peripheral:
-            The Stretchsense peripheral whose sensor data needs to be read.
+class API:
+    """API that gets input from user and outputs predicted gesture."""
 
-    Returns:
-        A list of integers representing the sensor data.
-    """
+    def setup(self) -> None:
+        """Prepares for gesture recognition.
+        
+        Connects to peripheral and loads in gesture list and trained model.
 
-    # Clear old sensor readings
-    for _ in range(300):
-        peripheral.read_sensors()
+        Raises:
+            NoPeripheralFoundError when no peripherals can be found.
+        """
 
-    # Take new sensor readings until a non-nil reading is obtained
-    data = None
-    while data is None:
-        data = peripheral.read_sensors()
+        if self._connect_peripheral():
+            self._load_model()
+            self._load_gestures()
+        else:
+            raise NoPeripheralFoundError()
 
-    # Convert to list and return
-    return data.tolist()
+    def _connect_peripheral(self) -> bool:
+        """Gets a Stretchsense peripheral for user input.
+        
+        Returns:
+            True if peripheral is connected.
+            False otherwise.
+        """
 
-def get_model() -> feed_forward.FeedForwardModel:
-    """Gets the trained model.
-    
-    Instantiate a specified model and load its parameters from a specified
-    .pth file from the trained_models directory. 
+        handler = bluetooth_handler.BluetoothHandler("")
+        self._peripheral = handler.connect_peripheral()
+        return self._peripheral is not None
 
-    Returns:
-        An instance of a trained model.
-    """
+    def _load_model(self) -> None:
+        """Gets the trained model.
+        
+        Instantiate a specified model and load its parameters from a specified
+        .pth file from the trained_models directory.
+        """
 
-    # Get params from config file
-    num_sensors = 0
-    num_gestures = 0
-    learning_cap = 0
-    modelpath = ""
-    with open("src/config.yaml") as config:
-        configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
+        # Get params from config file
+        num_sensors = 0
+        num_gestures = 0
+        learning_cap = 0
+        modelpath = ""
+        with open("src/config.yaml") as config:
+            configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
 
-        num_sensors = configyaml["general"]["num_sensors"]
-        num_gestures = len(configyaml["general"]["gestures"])
-        learning_cap = configyaml["hyperparams"]["learning_capacity"]
-        modelpath = configyaml["filepaths"]["trained_model"]
+            num_sensors = configyaml["general"]["num_sensors"]
+            num_gestures = len(configyaml["general"]["gestures"])
+            learning_cap = configyaml["hyperparams"]["learning_capacity"]
+            modelpath = configyaml["filepaths"]["trained_model"]
 
-    # Instantiate model
-    model = feed_forward.FeedForwardModel(num_sensors,
-                                          num_gestures,
-                                          learning_cap)
+        # Instantiate model
+        model = feed_forward.FeedForwardModel(num_sensors,
+                                            num_gestures,
+                                            learning_cap)
 
-    # Load in parameters from trained model
-    model.load_state_dict(torch.load(modelpath))
+        # Load in parameters from trained model
+        model.load_state_dict(torch.load(modelpath))
 
-    # Return the model
-    return model
+        # Return the model
+        self._model = model
 
-def get_gestures() -> List[str]:
-    """Gets the list of gestures the model was trained with."""
+    def _load_gestures(self) -> None:
+        """Gets the list of gestures the model was trained with."""
 
-    # Getting list from config file
-    gestures = []
-    with open("src/config.yaml") as config:
-        configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
-        gestures = configyaml["general"]["gestures"]
+        # Getting list from config file
+        gestures = []
+        with open("src/config.yaml") as config:
+            configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
+            gestures = configyaml["general"]["gestures"]
 
-    return gestures
+        self._gestures = gestures
+
+    def read_gesture(self) -> str:
+        # Get input data from the peripheral
+        testdata = self._get_input()
+
+        # Generate the prediction using the model
+        output = self._model(torch.tensor(testdata))
+        resultidx = torch.argmax(output).item()
+        result = self._gestures[resultidx]
+        
+        # Display the prediction
+        print(f"\nDetected gesture: {result}")
+
+    def _get_input(self) -> List[int]:
+        """Gets the input data from the connected peripheral.
+        
+        Args:
+            peripheral:
+                The Stretchsense peripheral whose sensor data needs to be read.
+
+        Returns:
+            A list of integers representing the sensor data.
+        """
+
+        # Clear old sensor readings
+        for _ in range(300):
+            self._peripheral.read_sensors()
+
+        # Take new sensor readings until a non-nil reading is obtained
+        data = None
+        while data is None:
+            data = self._peripheral.read_sensors()
+
+        # Convert to list and return
+        return data.tolist()
 
 def main() -> None:
-    """The main script for the application."""
+    """Main app script."""
+    api = API()
 
-    # Connect to the peripheral
-    peripheral = connect_peripheral()
-
-    # Check if peripheral is connected
-    if peripheral is None:
+    try:
+        api.setup()
+    except NoPeripheralFoundError as npfe:
         return
-
-    # Get a trained model for predictions
-    model = get_model()
-
-    # Get the list of gestures that the model was trained with
-    gestures = get_gestures()
 
     # Repeat until user decides to stop
     flag = True
     while flag:
-        # Get input data from the peripheral
-        testdata = get_input(peripheral)
-
-        # Generate the prediction using the model
-        output = model(torch.tensor(testdata))
-        resultidx = torch.argmax(output).item()
-        result = gestures[resultidx]
-        
-        # Display the prediction
-        print(f"\nDetected gesture: {result}")
+        api.read_gesture()
 
         # Checking if user wants to do another gesture
         print("\n Again? [Y/N]: ")
