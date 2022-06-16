@@ -58,7 +58,7 @@ class DataCollector:
     def _connect(self) -> bool:
         """Connects to a peripheral and sets up the instance fields."""
 
-        self._handler = bluetooth_handler.BluetoothHandler("")
+        self._handler = bluetooth_handler.BluetoothHandler()
         self._peripheral = self._handler.connect_peripheral()
 
         return self._peripheral is not None
