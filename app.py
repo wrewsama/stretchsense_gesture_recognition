@@ -45,7 +45,7 @@ class API:
         """
 
         # Create new handler
-        handler = bluetooth_handler.BluetoothHandler("")
+        handler = bluetooth_handler.BluetoothHandler()
 
         # Connect peripheral
         self._peripheral = handler.connect_peripheral()
