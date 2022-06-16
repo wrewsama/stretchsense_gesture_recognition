@@ -139,19 +139,29 @@ def main() -> None:
     with open("src/config.yaml") as config:
         configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
 
+        # General parameters
         num_sensors = configyaml["general"]["num_sensors"]
         num_gestures = len(configyaml["general"]["gestures"])
+
+        # Hyperparameters for machine learning
         learning_cap = configyaml["hyperparams"]["learning_capacity"]
-        data = configyaml["filepaths"]["data"]
         batch_size = configyaml["hyperparams"]["batch_size"]
         num_epochs = configyaml["hyperparams"]["num_epochs"]
         lr = configyaml["hyperparams"]["lr"]
+
+        # File paths
+        data = configyaml["filepaths"]["data"]
         model_path = configyaml["filepaths"]["trained_model"]
 
+    # Instantiate model
     model = feed_forward.FeedForwardModel(num_sensors,
                                           num_gestures,
                                           learning_cap)
+
+    # Choose optimiser function
     optimiser_function = torch.optim.SGD
+
+    # Create the trainer object
     trainer = Trainer(data,
                       batch_size,
                       num_epochs,
