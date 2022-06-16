@@ -150,8 +150,8 @@ def main() -> None:
         lr = configyaml["hyperparams"]["lr"]
 
         # File paths
-        data = configyaml["filepaths"]["data"]
-        model_path = configyaml["filepaths"]["trained_model"]
+        data = f"data/{configyaml['filenames']['data']}.csv"
+        model_path = f"trained_models/{configyaml['filenames']['trained_model']}.pth"
 
     # Instantiate model
     model = feed_forward.FeedForwardModel(num_sensors,

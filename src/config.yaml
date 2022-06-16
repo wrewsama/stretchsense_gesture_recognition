@@ -1,7 +1,7 @@
-# Paths to particular files
-filepaths:
-  data: data/example_dataset.csv
-  trained_model: trained_models/example_model.pth
+#  Names of particular files to be created
+filenames:
+  data: example_dataset
+  trained_model: example_model
 
 # Hyperparameters for machine learning
 hyperparams:
@@ -17,5 +17,6 @@ general:
     - rock
     - paper
     - scissors
+    - okay
   num_reps: 500
-  num_sets: 3
+  num_sets: 1

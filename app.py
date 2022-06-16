@@ -71,7 +71,7 @@ class API:
             num_sensors = configyaml["general"]["num_sensors"]
             num_gestures = len(configyaml["general"]["gestures"])
             learning_cap = configyaml["hyperparams"]["learning_capacity"]
-            modelpath = configyaml["filepaths"]["trained_model"]
+            modelpath = f"trained_models/{configyaml['filenames']['trained_model']}.pth"
 
         # Instantiate model
         model = feed_forward.FeedForwardModel(num_sensors,

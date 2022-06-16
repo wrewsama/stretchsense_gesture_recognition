@@ -150,7 +150,7 @@ def main():
     gestures = []
     with open("src/config.yaml") as config:
         configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
-        data_file_path = configyaml["filepaths"]["data"]
+        data_file_path = f"data/{configyaml['filenames']['data']}.csv"
         num_reps = configyaml["general"]["num_reps"]
         num_sets = configyaml["general"]["num_sets"]
         gestures = configyaml["general"]["gestures"]
