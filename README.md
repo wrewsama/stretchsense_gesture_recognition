@@ -8,8 +8,23 @@ It comprises:
 
 The file paths to store the collected raw data and trained model, the hyperparameters for machine learning, and the list of gestures to be trained and recognised can be easily adapted to the user's needs by editing the `src/config.yaml` file.
 
-## Technologies Used
+## Table of Contents
+1. [Technologies Used](#technologies-used)
+2. [Installation](#installation)
+3. [Usage](#usage)
+    * [Config File](#config-file)
+    * [Data Collector](#data-collector)
+    * [Trainer](#trainer)
+    * [App](#app)
+    * [API](#api)
+4. [Credits](#credits)
 
+## Technologies Used
+This project utilises the following technologies:
+
+[BluePy](https://github.com/IanHarvey/bluepy) - For connecting to and collecting input from the peripherals.
+
+[PyTorch](https://pytorch.org/) - For making and training machine learning models.
 
 ## Installation
 1. Clone with:
