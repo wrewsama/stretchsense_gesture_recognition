@@ -4,7 +4,7 @@ from torch.utils.data import random_split, DataLoader
 from typing import List, Dict
 
 import yaml
-from models import logistic_regression, feed_forward
+from models import feed_forward
 import dataset
 import matplotlib.pyplot as plt
 

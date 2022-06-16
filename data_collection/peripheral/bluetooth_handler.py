@@ -1,11 +1,9 @@
 """Handler for StretchSense Peripherals using Bluetooth."""
 
 from typing import List, Dict, Optional
-import numpy as np
 from bluepy import btle
 from . import stretchsense_delegate as ssd
 from . import stretchsense_peripheral as ssp
-import yaml
 
 class BluetoothHandler:
     """Handles connecting to a StretchSense device via Bluetooth Low Energy.

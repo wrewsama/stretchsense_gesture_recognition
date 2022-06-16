@@ -1,7 +1,6 @@
 import binascii
 import numpy as np
 from bluepy import btle
-from typing import List, Optional
 
 class StretchSenseDelegate(btle.DefaultDelegate):
     """Handles notifications from the glove
