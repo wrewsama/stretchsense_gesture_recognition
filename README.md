@@ -8,6 +8,9 @@ It comprises:
 
 The file paths to store the collected raw data and trained model, the hyperparameters for machine learning, and the list of gestures to be trained and recognised can be easily adapted to the user's needs by editing the `src/config.yaml` file.
 
+## Technologies Used
+
+
 ## Installation
 1. Clone with:
 ```
@@ -34,8 +37,8 @@ $ sudo setcap 'cap_net_raw,cap_net_admin+eip' bluepy-helper
 ## Usage
 ### Config File
 Inside `src/config.yaml`, choose the:
-* Raw data file path
-* Trained model file path
+* Raw data file name
+* Trained model file name
 * Hyperparameters including:
     * Number of epochs
     * Learning rate
@@ -46,15 +49,63 @@ Inside `src/config.yaml`, choose the:
 * Number of repetitions and sets of data to be collected for each gesture
 
 ### Data Collector
-1. Switch on the Stretchsense peripheral.
-2. Run the data collector script with:
+1. Inside `src/config.yaml`, choose the:
+    * Raw data file name
+    * List of gestures
+    * Number of repetitions and sets of data to be collected for each gesture
+2. Switch on the Stretchsense peripheral.
+3. Run the data collector script with:
 ```
 $ python3 data_collection/data_collector.py
 ```
+4. Select the peripheral by entering its corresponding number in the command line.
+5. When prompted, make the gestures shown and **hold** them until the prompt states the gesture has been completed.
+6. The data file will be stored in `data/<filename>.csv` where `filename` is the chosen raw data file name entered in `src/config.yaml`
+
+### Trainer
+1. Inside `src/config.yaml`, choose the:
+    * Hyperparameters
+    * File name of the raw data for training
+    * File name of the file to store the trained model in
+    * Number of sensors
+2. Run the trainer script with:
+```
+$ python3 src/train.py
+```
+3. The accuracy and loss for every 10 epochs will be displayed in the command line and as a graph at the end of the training.
+4. The trained model will be saved in `trained_models/<filename>.pth` where `filename` is the chosen trained model file name entered in `src/config.yaml`.
+
+### App
+1. Inside `src/config.yaml`, choose the:
+    * Hyperparameters
+    * File name of the trained model
+2. Run the app script with:
+```
+$ python3 app.py
+```
 3. Select the peripheral by entering its corresponding number in the command line.
-4. Select which hand the glove is made for (i.e. right handed or left handed glove) by entering either `r` or `l` in the command line for right and left respectively. 
-5. When prompted, make the gestures shown and **hold** them until the next one is shown.
-6. The data file will be stored in the file path specified in `src/config.yaml`
+4. The current gesture will be printed in the command line.
+5. To continue, input "y" in the command line. To exit, input "n"
+
+### API
+The app can be imported with:
+```python
+import app
+```
+
+Set up with:
+```python
+api = app.API()
+try:
+    api.setup()
+except NoPeripheralFoundError as npfe:
+    print(npfe)    
+```
+
+Read gestures with:
+```python
+api.read_gesture()
+```
 
 ## Credits
 Andrew Lo Zhi Sheng 
