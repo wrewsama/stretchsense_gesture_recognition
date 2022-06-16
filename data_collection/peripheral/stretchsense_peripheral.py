@@ -3,6 +3,7 @@
 from bluepy import btle
 from abc import ABC
 import numpy as np
+import yaml
 from . import stretchsense_delegate
 from typing import Optional
 
@@ -14,21 +15,15 @@ class StretchSensePeripheral(btle.Peripheral, ABC):
             A string representing the Bluetooth address of this Peripheral.
 
     Attributes:
-        ACTIVE_SENSORS:
-            A numpy array representing the sensors that represent each joint.
         NUM_SENSORS:
             An integer representing the number of sensors on the glove.
-        SIDE:
-            A string representing which hand the glove is for.
     """
 
     def __init__(self, address: str):
         super().__init__(address, "random")
 
         # Attributes
-        self.ACTIVE_SENSORS: np.ndarray
         self.NUM_SENSORS: int
-        self.SIDE: str
 
         # The peripheral's service uuid
         self._SERVICE_UUID: str
@@ -78,41 +73,14 @@ class StretchSensePeripheral(btle.Peripheral, ABC):
             if len(cap) == self.NUM_SENSORS:
                 return cap
             
-class RightStretchSenseGlove(StretchSensePeripheral):
-    """Represents a particular right handed Stretchsense glove."""
+class StretchSenseGlove(StretchSensePeripheral):
+    """Represents a particular Stretchsense glove."""
 
     def __init__(self, address: str):
         super().__init__(address)
 
         # Set up constants
         self._SERVICE_UUID: str = '00001701-7374-7265-7563-6873656e7365'
-        self.ACTIVE_SENSORS: np.ndarray = np.array([
-            [1, 1, 0, 1, 0, 0, 0, 0], # thumb
-            [0, 1, 1, 1, 0, 0, 0, 0], # thumb
-            [0, 0, 0, 0, 1, 0, 0, 0], # index
-            [0, 0, 0, 0, 0, 1, 0, 0], # middle
-            [0, 0, 0, 0, 0, 0, 1, 0], # ring
-            [0, 0, 0, 0, 0, 0, 0, 1]  # pinky
-        ])
-        self.NUM_SENSORS: int = 7
-        self.SIDE: str = "right"
-
-
-class LeftStretchSenseGlove(StretchSensePeripheral):
-    """Represents a particular left handed Stretchsense glove."""
-
-    def __init__(self, address: str, pkg_directory: str):
-        super().__init__(address)
-
-        # Set up constants
-        self._SERVICE_UUID: str = '00001701-7374-7265-7563-6873656e7365'
-        self.ACTIVE_SENSORS: np.ndarray = np.array([
-            [1, 1, 0, 1, 0, 0, 0, 0], # thumb
-            [0, 1, 1, 1, 0, 0, 0, 0], # thumb
-            [0, 0, 0, 0, 1, 0, 0, 0], # index
-            [0, 0, 0, 0, 0, 1, 0, 0], # middle
-            [0, 0, 0, 0, 0, 0, 1, 0], # ring
-            [0, 0, 0, 0, 0, 0, 0, 1]  # pinky
-        ])
-        self.NUM_SENSORS: int = 7
-        self.SIDE: str = "left"
+        with open("src/config.yaml") as config:
+            configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
+            self.NUM_SENSORS: int = configyaml["general"]["num_sensors"]

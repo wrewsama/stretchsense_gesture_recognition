@@ -6,19 +6,7 @@ from . import stretchsense_delegate as ssd
 from . import stretchsense_peripheral as ssp
 
 class BluetoothHandler:
-    """Handles connecting to a StretchSense device via Bluetooth Low Energy.
-    
-    Args:
-        pkg_directory:
-            A string representing the the filepath to this package.
-    """
-
-    def __init__(self, pkg_directory: str):
-        self._pkg_directory: str = pkg_directory
-
-        # Store known peripherals in a dict with addresses as keys
-        # and names as values. For this project, there are no known peripherals
-        self._known_peripherals: Dict = {}
+    """Handles connecting to a StretchSense device via Bluetooth Low Energy."""
 
     def _get_available_peripherals(self) -> List:
         """Gets a list of the available Stretchsense Peripherals."""
@@ -55,10 +43,7 @@ class BluetoothHandler:
 
         # Display available peripherals
         for idx, addr in enumerate(available_peripherals):
-            if addr in self._known_peripherals.keys(): # If the device is known
-                print(f"{idx}. {addr}")
-            else:
-                print(f"{idx}. Unknown, addr: {addr}") # If device is unknown
+            print(f"{idx}. {addr}")
 
         # Prompt user for selection
         selected = int(input("\n Select glove from 0 to " +
@@ -70,26 +55,7 @@ class BluetoothHandler:
     def _get_glove(self, address: str) -> ssp.StretchSensePeripheral:
         """Returns a glove object corresponding to the given address."""
 
-        if address in self._known_peripherals.keys(): # Peripheral is known
-            # Return glove based on name
-            if self._known_peripherals[address] == "left_glove":
-                print("\n Left Glove detected.")
-                return ssp.LeftStretchSenseGlove(address)
-            elif self._known_peripherals[address] == "right_glove":
-                print("\n Right Glove detected.")
-                return ssp.RightStretchSenseGlove(address)
-
-        else: # Peripheral is unknown
-            # Prompt user for input and return appropriate glove
-            side = input("\n Is this a right or left handed glove? R/L: ")
-            if side in ["l", "left"]:
-                return ssp.LeftStretchSenseGlove(address)
-            elif side in ["r", "right"]:
-                return ssp.RightStretchSenseGlove(address)
-            else:
-                # Prompt again if input is invalid
-                print("\n Error: invalid input")
-                return self._get_glove(address)
+        return ssp.StretchSenseGlove(address)
 
     def connect_peripheral(self) -> Optional[ssp.StretchSensePeripheral]:
         """Connect to a selected StretchSense Peripheral.
