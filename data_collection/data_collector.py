@@ -20,13 +20,16 @@ class DataCollector:
             Number of sets of each gesture taken.
         gestures:
             A list of the names of the gestures to be trained.
+        num_sensors:
+            Number of sensors in the peripheral used for data collection.
     """
 
     def __init__(self,
                  filepath: str,
                  num_reps: int,
                  num_sets: int,
-                 gestures: List):
+                 gestures: List,
+                 num_sensors: int):
 
         # The handler used to connect to Stretchsense peripherals via Bluetooth
         self._handler: bluetooth_handler.BluetoothHandler
@@ -38,6 +41,7 @@ class DataCollector:
         self._num_reps: int = num_reps
         self._num_sets: int = num_sets
         self._gestures: List[str] = gestures
+        self._num_sensors: int = num_sensors
 
     def run(self) -> None:
         """Handle data collection.
@@ -116,16 +120,11 @@ class DataCollector:
                     target_data: List[List[str]]) -> None:
         """Creates a csv file to store the collected data."""
         
+        # Generate headers
         headers = ["gesture_index",
-                   "gesture_name",
-                   "sensor1",
-                   "sensor2",
-                   "sensor3",
-                   "sensor4",
-                   "sensor5",
-                   "sensor6",
-                   "sensor7",
-                   ]
+                   "gesture_name"]
+        for i in range(1, self._num_sensors + 1):
+            headers.append(f"sensor{i}")
 
         # Write to given file path
         with open(f"{self._filepath}", "w+") as data_file:
@@ -150,15 +149,21 @@ def main():
     num_reps = 0
     num_sets = 0
     gestures = []
+    num_sensors = 0
     with open("src/config.yaml") as config:
         configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
         data_file_path = f"data/{configyaml['filenames']['data']}.csv"
         num_reps = configyaml["general"]["num_reps"]
         num_sets = configyaml["general"]["num_sets"]
         gestures = configyaml["general"]["gestures"]
+        num_sensors = configyaml["general"]["num_sensors"]
 
     # Instantiate a data collector with the given parameters
-    collector = DataCollector(data_file_path, num_reps, num_sets, gestures)
+    collector = DataCollector(data_file_path,
+                              num_reps,
+                              num_sets,
+                              gestures,
+                              num_sensors)
 
     # Run the collector
     collector.run()

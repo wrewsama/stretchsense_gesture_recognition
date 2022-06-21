@@ -1,5 +1,6 @@
 import pandas as pd
 import torch
+import yaml
 from torch.utils.data import Dataset
 from typing import Tuple
 
@@ -15,10 +16,16 @@ class CapacitanceDataset(Dataset):
         # Load in the raw data as a pandas DataFrame object
         data_file = pd.read_csv(filepath)
 
+        # Get the number of sensors from the config file
+        num_sensors = 0
+        with open("src/config.yaml") as config:
+            configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
+            num_sensors = configyaml["general"]["num_sensors"]
+
         # Split up the data into the target labels (i.e. the gesture indices)
         # and the inputs (i.e. the sensor data)
-        labels = data_file.iloc[:, 0].values
-        inputs = data_file.iloc[:, 2:9].values
+        labels = data_file.iloc[:, 0].values # Gesture index
+        inputs = data_file.iloc[:, 2:2+num_sensors].values # Sensors
 
         # Converting to torch tensors
         self.inputs = torch.tensor(inputs, dtype=torch.float32)
