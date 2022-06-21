@@ -17,7 +17,8 @@ The file paths to store the collected raw data and trained model, the hyperparam
     * [Trainer](#trainer)
     * [App](#app)
     * [API](#api)
-4. [Credits](#credits)
+4. [Models](#models)
+5. [Credits](#credits)
 
 ## Technologies Used
 This project utilises the following technologies:
@@ -121,6 +122,24 @@ Read gestures with:
 ```python
 api.read_gesture()
 ```
+
+## Models
+
+Models trained with:
+* Batch size of 128
+* 500 epochs
+* Learning rate of 1e-5
+* Stochastic Gradient Descent optimiser
+
+### 1. Simple Logistic Regression
+![graph](https://i.ibb.co/bR73swV/Screenshot-from-2022-06-21-14-44-50.png")
+
+Reaches 99% accuracy after approximately 200 epochs
+
+### 2. Feed Forward Network With One Hidden Layer 
+![graph](https://i.ibb.co/WBXPTPP/Screenshot-from-2022-06-21-14-45-05.png) 
+
+Reaches 99% accuracy after about 30 epochs
 
 ## Credits
 Andrew Lo Zhi Sheng 
