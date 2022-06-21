@@ -17,6 +17,5 @@ general:
     - rock
     - paper
     - scissors
-    - okay
   num_reps: 500
   num_sets: 1
