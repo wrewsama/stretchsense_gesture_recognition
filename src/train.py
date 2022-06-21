@@ -48,6 +48,7 @@ class Trainer:
                                         [train_ds_size,
                                          len(ds) - train_ds_size])
 
+        # Initialise Data Loaders
         self._train_loader = DataLoader(train_ds, batch_size, shuffle=True)
         self._val_loader = DataLoader(val_ds, batch_size)
 

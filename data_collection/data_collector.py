@@ -127,6 +127,7 @@ class DataCollector:
                    "sensor7",
                    ]
 
+        # Write to given file path
         with open(f"{self._filepath}", "w+") as data_file:
             # Instantiate csv writer
             csv_writer = csv.writer(data_file)
@@ -137,6 +138,7 @@ class DataCollector:
             # Write for each sample
             total_num_samples = self._num_reps * self._num_sets * len(self._gestures)
             for i in range(total_num_samples):
+                # Each row comprises the index and name of the gesture, followed by the sensors
                 row = [*target_data[i], *input_data[i]]
                 csv_writer.writerow(row)
 
@@ -155,6 +157,7 @@ def main():
         num_sets = configyaml["general"]["num_sets"]
         gestures = configyaml["general"]["gestures"]
 
+    # Instantiate a data collector with the given parameters
     collector = DataCollector(data_file_path, num_reps, num_sets, gestures)
 
     # Run the collector
