@@ -1,4 +1,4 @@
-"""Script to get input from user and output the predicted gesture."""
+"""Contains the API to read and return gesture commands."""
 
 import torch
 from typing import List
@@ -130,31 +130,3 @@ class API:
 
         # Convert to list and return
         return data.tolist()
-
-def main() -> None:
-    """Main app script."""
-
-    # Instantiate the api object
-    api = API()
-
-    try:
-        # Set up the object
-        api.setup()
-    except NoPeripheralFoundError as npfe:
-        # If no peripheral can be connected, quit
-        return
-
-    # Repeat until user decides to stop
-    flag = True
-    while flag:
-        # Read and print gesture
-        print(api.read_gesture())
-
-        # Checking if user wants to do another gesture
-        print("\n Again? [Y/N]: ")
-        if input() not in ["y", "Y", ""]:
-            flag = False
-            print("Exiting...")
-
-if __name__ == "__main__":
-    main()
