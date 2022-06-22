@@ -4,7 +4,8 @@ This project aims to provide an API to take in sensor readings from a StretchSen
 It comprises:
 1. A data collection script for the collection of training data from the peripheral.
 2. A training script to train a Machine Learning model to recognise gestures based on the sensor data from the device.
-3. An API that allows the user to connect to a StretchSense device and get the recognised gesture as output on the command line.
+3. An API that allows the user to connect to a StretchSense device and get the recognised gesture.
+4. A simple example script utilising the API to play a game of Rock Paper Scissors.
 
 The file paths to store the collected raw data and trained model, the hyperparameters for machine learning, and the list of gestures to be trained and recognised can be easily adapted to the user's needs by editing the `src/config.yaml` file.
 
@@ -15,9 +16,11 @@ The file paths to store the collected raw data and trained model, the hyperparam
     * [Config File](#config-file)
     * [Data Collector](#data-collector)
     * [Trainer](#trainer)
-    * [App](#app)
     * [API](#api)
+    * [Example use of API](#example---rock-paper-scissors)
 4. [Models](#models)
+    * [Simple Logistic Regression](#1-simple-logistic-regression)
+    * [Feed Forward](#2-feed-forward-network-with-one-hidden-layer)
 5. [Credits](#credits)
 
 ## Technologies Used
@@ -51,6 +54,8 @@ $ sudo setcap 'cap_net_raw,cap_net_admin+eip' bluepy-helper
 ```
 
 ## Usage
+An example use of the gesture recognition API to play a simple game of Rock Paper Scissors has been included in the `example.py` script. Configuration details, as well as instructions to train the model can be found in the docstring at the beginning of the script.
+
 ### Config File
 Inside `src/config.yaml`, choose the:
 * Raw data file name
@@ -91,18 +96,6 @@ $ python3 src/train.py
 3. The accuracy and loss for every 10 epochs will be displayed in the command line and as a graph at the end of the training.
 4. The trained model will be saved in `trained_models/<filename>.pth` where `filename` is the chosen trained model file name entered in `src/config.yaml`.
 
-### App
-1. Inside `src/config.yaml`, choose the:
-    * Hyperparameters
-    * File name of the trained model
-2. Run the app script with:
-```
-$ python3 app.py
-```
-3. Select the peripheral by entering its corresponding number in the command line.
-4. The current gesture will be printed in the command line.
-5. To continue, input "y" in the command line. To exit, input "n"
-
 ### API
 The app can be imported with:
 ```python
@@ -122,10 +115,47 @@ Read gestures with:
 ```python
 api.read_gesture()
 ```
+This will return a string containing the name of the detected gesture.
+
+### Example - Rock Paper Scissors
+1. Inside `src/config.yaml`, use the following parameters:
+```yaml
+# Names of particular files to be created
+filenames:
+  data: example_dataset
+  trained_model: example_model
+
+# Hyperparameters for machine learning
+hyperparams:
+  num_epochs: 500
+  lr: 0.00001
+  batch_size: 128
+  learning_capacity: 32
+
+# General parameters
+general: 
+  num_sensors: 7
+  gestures:
+    - rock
+    - paper
+    - scissors
+  num_reps: 500
+  num_sets: 1
+```
+2. Run the [Data Collector](#data-collector)
+3. Run the [Trainer](#trainer)
+4. Run the example script using:
+```
+$ python3 example.py
+```
+5. Select the peripheral by entering its corresponding number in the command line.
+6. Make your move and press the `ENTER` key
+7. Your detected move, the computer opponent's move, and the game result will be printed out on the command line.
+8. To quit, enter `n` into the command line, to continue, just press `ENTER`
 
 ## Models
 
-Models trained with:
+Models tested with:
 * Batch size of 128
 * 500 epochs
 * Learning rate of 1e-5
