@@ -30,13 +30,21 @@ import gesture_recognition_api
 import random
 
 def get_choice() -> str:
-    """Gets the computer's choice of move."""
+    """Gets the computer's choice of move.
+    
+    Returns:
+        A randomly selected string representing the computer's chosen move.
+    """
 
     return random.choice(["rock", "paper", "scissors"])
 
 def process_moves(player_choice: str, opponent_choice: str) -> str:
     """Gets the result of the game.
     
+    Takes in the player's and the computer's moves and returns a string
+    containing the game's result, in accordance with the standard rules of
+    rock paper scissors.
+
     Args:
         player_choice:
             A string representing the choice of move of the player.
@@ -69,7 +77,7 @@ def process_moves(player_choice: str, opponent_choice: str) -> str:
 
 def main() -> None:
     """Script containing the main game loop."""
-    
+
     # Instantiate the API
     api = gesture_recognition_api.API()
 
