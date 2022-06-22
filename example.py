@@ -30,10 +30,26 @@ import gesture_recognition_api
 import random
 
 def get_choice() -> str:
+    """Gets the computer's choice of move."""
+
     return random.choice(["rock", "paper", "scissors"])
 
 def process_moves(player_choice: str, opponent_choice: str) -> str:
+    """Gets the result of the game.
+    
+    Args:
+        player_choice:
+            A string representing the choice of move of the player.
+        opponent_choice:
+            A string representing the choice of move of the computer.
+
+    Returns:
+        A string representing whether the player wins, loses, or draws the
+        game.
+    """
+
     if player_choice == opponent_choice:
+        # If the choices are the same, game is a draw
         return "Draw"
     elif player_choice == "rock":
         if opponent_choice == "paper":
@@ -52,6 +68,8 @@ def process_moves(player_choice: str, opponent_choice: str) -> str:
             return "You Win"
 
 def main() -> None:
+    """Script containing the main game loop."""
+    
     # Instantiate the API
     api = gesture_recognition_api.API()
 
@@ -65,14 +83,21 @@ def main() -> None:
     input("Press ENTER to start.\n")
     # Game loop
     while True:
+        # Get player's choice
         player_choice = api.read_gesture()
-        print(f"You choose: {player_choice}")
-        opp_choice = get_choice()
-        print(f"Computer chose: {opp_choice}")
+        print(f"You choose: {player_choice}") # Display choice
 
+        # Get computer's choice
+        opp_choice = get_choice()
+        print(f"Computer chose: {opp_choice}") # Display choice
+
+        # Get and display the game result
         print(process_moves(player_choice, opp_choice))
 
+        # Check if user wants to stop
         if input("\nContinue? Y/N: ") in ["n", "N"]:
+            # Exit the game loop
+            print("\nExiting...")
             break
 
 if __name__ == "__main__":
