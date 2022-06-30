@@ -10,14 +10,30 @@ def switch_to(frame: tk.Frame) -> None:
 config_frame = tk.Frame(window)
 config_frame.grid(row=0, column=0, sticky="nsew")
 
-confirm_txt = tk.Label(config_frame, text="param")
-confirm_txt.grid(row=0, column=0, sticky="w")
+def create_param(name: str, row: int) -> tk.Entry:
+    """Creates the label and entry for a particular param.
+    
+    Returns:
+        The corresponding entry instance.
+    """
+    tk.Label(config_frame, text=name).grid(row=row, column=0, sticky="w")
+    entry = tk.Entry(config_frame)
+    entry.grid(row=row, column=1, sticky="e")
+    return entry
 
-confirm_input = tk.Entry(config_frame)
-confirm_input.grid(row=0, column=1, sticky="e")
+data = create_param("data file path: ", 0)
+trained_model = create_param("model file path: ", 1)
+num_epochs = create_param("num_epochs: ", 2)
+lr = create_param("learning rate: ", 3)
+batch_size = create_param("batch size: ", 4)
+learning_capacity = create_param("learning capacity: ", 5)
+num_sensors = create_param("number of sensors: ", 6)
+gestures = create_param("gestures: ", 7)
+num_reps = create_param("number of repetitions: ", 8)
+num_sets = create_param("number of sets: ", 9)
 
 confirm_btn = tk.Button(config_frame, text="CONFIRM", command=lambda:switch_to(data_collector_frame))
-confirm_btn.grid(row=1, column=0, columnspan=2)
+confirm_btn.grid(row=10, column=0, columnspan=2)
 
 """Data Collector frame setup."""
 data_collector_frame = tk.Frame(window)
