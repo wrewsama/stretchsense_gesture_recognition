@@ -1,4 +1,7 @@
+from pydoc import doc
 import tkinter as tk
+
+import yaml
 
 window = tk.Tk()
 window.title("test")
@@ -32,7 +35,33 @@ gestures = create_param("gestures: ", 7)
 num_reps = create_param("number of repetitions: ", 8)
 num_sets = create_param("number of sets: ", 9)
 
-confirm_btn = tk.Button(config_frame, text="CONFIRM", command=lambda:switch_to(data_collector_frame))
+
+
+def confirm():
+    config_dict = {
+        'filenames': {
+            'data': data.get(),
+            'trained_model': trained_model.get()
+            }, 
+        'hyperparams': {
+            'num_epochs': int(num_epochs.get()),
+            'lr': float(lr.get()),
+            'batch_size': int(batch_size.get()),
+            'learning_capacity': int(learning_capacity.get())
+            },
+        'general': {
+            'num_sensors': int(num_sensors.get()),
+            'gestures': gestures.get().split(", "),
+            'num_reps': int(num_reps.get()),
+            'num_sets': int(num_sets.get())
+            }
+        }
+    with open("src/config.yaml", 'w') as configyaml:
+        yaml.dump(config_dict, configyaml, default_flow_style=False)
+
+    switch_to(data_collector_frame)
+
+confirm_btn = tk.Button(config_frame, text="CONFIRM", command=confirm)
 confirm_btn.grid(row=10, column=0, columnspan=2)
 
 """Data Collector frame setup."""
