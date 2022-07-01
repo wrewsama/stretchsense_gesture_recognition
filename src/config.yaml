@@ -1,16 +1,14 @@
 filenames:
-  data: example_dataset
-  trained_model: example_model
+  data: a
+  trained_model: a
 general:
   gestures:
-  - rock
-  - paper
-  - scissors
-  num_reps: 400
-  num_sensors: 7
+  - a
+  num_reps: 1
+  num_sensors: 1
   num_sets: 1
 hyperparams:
-  batch_size: 128
-  learning_capacity: 32
-  lr: 1.0e-05
-  num_epochs: 500
+  batch_size: 1
+  learning_capacity: 1
+  lr: 1.0
+  num_epochs: 1

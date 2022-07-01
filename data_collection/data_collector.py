@@ -1,11 +1,13 @@
 import csv
+import sys
 import time
 from typing import List, Tuple
 
 import yaml
 
-from peripheral import bluetooth_handler
-from peripheral import stretchsense_peripheral as ssp
+from .peripheral import bluetooth_handler
+from .peripheral import stretchsense_peripheral as ssp
+
 
 class DataCollector:
     """This class collects data from the Stretchsense Glove.
@@ -73,6 +75,9 @@ class DataCollector:
         # Setting up output lists
         inputs = []
         targets = []
+
+        # Redirect print statements from console to tkinter text box
+        sys.stdout.write = lambda string: gui.instructions_textbox.insert(tk.INSERT, string)
 
         # Main data collection loop
         for _ in range(self._num_sets):

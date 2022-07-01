@@ -1,6 +1,4 @@
-from pydoc import doc
 import tkinter as tk
-
 import yaml
 
 window = tk.Tk()
@@ -35,8 +33,6 @@ gestures = create_param("gestures: ", 7)
 num_reps = create_param("number of repetitions: ", 8)
 num_sets = create_param("number of sets: ", 9)
 
-
-
 def confirm():
     config_dict = {
         'filenames': {
@@ -68,9 +64,21 @@ confirm_btn.grid(row=10, column=0, columnspan=2)
 data_collector_frame = tk.Frame(window)
 data_collector_frame.grid(row=0, column=0, sticky="nsew")
 
-data_txt = tk.Label(data_collector_frame, text="data")
-data_txt.pack()
-data_collector_btn = tk.Button(config_frame, text="CONFIRM", command=lambda:switch_to(data_collector_frame))
+"""TODO"""
+def collect_data() -> None:
+    pass
+
+data_collector_btn = tk.Button(data_collector_frame,
+                               text="COLLECT DATA",
+                               command=collect_data)
+data_collector_btn.grid(row=0, column=0)
+
+"""Instructions frame setup"""
+instructions_frame = tk.Frame(window)
+tk.Label(instructions_frame, text="Current Gesture:").grid(row=0, column=0, sticky="w")
+
+instructions_textbox = tk.Text(instructions_frame)
+instructions_textbox.grid(row=1, column=0)
 
 """Trainer frame setup."""
 trainer_frame = tk.Frame(window)
