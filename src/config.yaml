@@ -1,9 +1,11 @@
 filenames:
   data: a
-  trained_model: a
+  trained_model: b
 general:
   gestures:
   - a
+  - b
+  - c
   num_reps: 1
   num_sensors: 1
   num_sets: 1

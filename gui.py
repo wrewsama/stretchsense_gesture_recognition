@@ -1,89 +1,102 @@
 import tkinter as tk
 import yaml
 
-window = tk.Tk()
-window.title("test")
 
-def switch_to(frame: tk.Frame) -> None:
-    frame.tkraise()
-
-"""Config frame setup."""
-config_frame = tk.Frame(window)
-config_frame.grid(row=0, column=0, sticky="nsew")
-
-def create_param(name: str, row: int) -> tk.Entry:
-    """Creates the label and entry for a particular param.
+class View(tk.Tk):
+    """The Graphical User Interface.
     
-    Returns:
-        The corresponding entry instance.
+    Provides a GUI to facilitate the configuration, data collection, and
+    model training processes.
     """
-    tk.Label(config_frame, text=name).grid(row=row, column=0, sticky="w")
-    entry = tk.Entry(config_frame)
-    entry.grid(row=row, column=1, sticky="e")
-    return entry
 
-data = create_param("data file path: ", 0)
-trained_model = create_param("model file path: ", 1)
-num_epochs = create_param("num_epochs: ", 2)
-lr = create_param("learning rate: ", 3)
-batch_size = create_param("batch size: ", 4)
-learning_capacity = create_param("learning capacity: ", 5)
-num_sensors = create_param("number of sensors: ", 6)
-gestures = create_param("gestures: ", 7)
-num_reps = create_param("number of repetitions: ", 8)
-num_sets = create_param("number of sets: ", 9)
+    def __init__(self, controller):
+        super().__init__()
+        self._controller = controller
 
-def confirm():
-    config_dict = {
-        'filenames': {
-            'data': data.get(),
-            'trained_model': trained_model.get()
-            }, 
-        'hyperparams': {
-            'num_epochs': int(num_epochs.get()),
-            'lr': float(lr.get()),
-            'batch_size': int(batch_size.get()),
-            'learning_capacity': int(learning_capacity.get())
-            },
-        'general': {
-            'num_sensors': int(num_sensors.get()),
-            'gestures': gestures.get().split(", "),
-            'num_reps': int(num_reps.get()),
-            'num_sets': int(num_sets.get())
+        # Creating frames
+        self._make_config_frame()
+        self._make_data_collector_frame()
+
+        # Start from config frame
+        self._switch_to(self._config_frame)
+
+    def main(self) -> None:
+        """Creates the GUI."""
+
+        self.mainloop()
+
+    def _switch_to(self, frame: tk.Frame) -> None:
+        """Switches to a given frame."""
+
+        frame.tkraise()
+
+    def _create_entry_param(self,
+                            name: str,
+                            row: int) -> tk.Entry:
+        """Creates the label and entry for a particular param.
+    
+        Returns:
+            The corresponding entry instance.
+        """
+
+        tk.Label(self._config_frame, text=name).grid(row=row, column=0, sticky="w")
+        entry = tk.Entry(self._config_frame)
+        entry.grid(row=row, column=1, sticky="e")
+        return entry
+
+    def _confirm(self) -> None:
+        """Function that is called when the CONFIRM button is hit."""
+
+        config_dict = {
+            'filenames': {
+                'data': self._data.get(),
+                'trained_model': self._trained_model.get()
+                }, 
+            'hyperparams': {
+                'num_epochs': int(self._num_epochs.get()),
+                'lr': float(self._lr.get()),
+                'batch_size': int(self._batch_size.get()),
+                'learning_capacity': int(self._learning_capacity.get())
+                },
+            'general': {
+                'num_sensors': int(self._num_sensors.get()),
+                'gestures': self._gestures.get().split(", "),
+                'num_reps': int(self._num_reps.get()),
+                'num_sets': int(self._num_sets.get())
+                }
             }
-        }
-    with open("src/config.yaml", 'w') as configyaml:
-        yaml.dump(config_dict, configyaml, default_flow_style=False)
+        with open("src/config.yaml", 'w') as configyaml:
+            yaml.dump(config_dict, configyaml, default_flow_style=False)
 
-    switch_to(data_collector_frame)
+        self._switch_to(self._data_collector_frame)
 
-confirm_btn = tk.Button(config_frame, text="CONFIRM", command=confirm)
-confirm_btn.grid(row=10, column=0, columnspan=2)
+    def _make_config_frame(self) -> None:
+        """Create the config frame."""
 
-"""Data Collector frame setup."""
-data_collector_frame = tk.Frame(window)
-data_collector_frame.grid(row=0, column=0, sticky="nsew")
+        # Frame
+        self._config_frame = tk.Frame(self)
+        self._config_frame.grid(row=0, column=0, sticky="nsew")
+        
+        # Labels and entries
+        self._data = self._create_entry_param("data file path: ", 0)
+        self._trained_model = self._create_entry_param("model file path: ", 1)
+        self._num_epochs = self._create_entry_param("num_epochs: ", 2)
+        self._lr = self._create_entry_param("learning rate: ", 3)
+        self._batch_size = self._create_entry_param("batch size: ", 4)
+        self._learning_capacity = self._create_entry_param("learning capacity: ", 5)
+        self._num_sensors = self._create_entry_param("number of sensors: ", 6)
+        self._gestures = self._create_entry_param("gestures: ", 7)
+        self._num_reps = self._create_entry_param("number of repetitions: ", 8)
+        self._num_sets = self._create_entry_param("number of sets: ", 9)
 
-"""TODO"""
-def collect_data() -> None:
-    pass
+        # Confirm button
+        self._confirm_btn = tk.Button(self._config_frame, text="CONFIRM", command=self._confirm)
+        self._confirm_btn.grid(row=10, column=0, columnspan=2)
 
-data_collector_btn = tk.Button(data_collector_frame,
-                               text="COLLECT DATA",
-                               command=collect_data)
-data_collector_btn.grid(row=0, column=0)
-
-"""Instructions frame setup"""
-instructions_frame = tk.Frame(window)
-tk.Label(instructions_frame, text="Current Gesture:").grid(row=0, column=0, sticky="w")
-
-instructions_textbox = tk.Text(instructions_frame)
-instructions_textbox.grid(row=1, column=0)
-
-"""Trainer frame setup."""
-trainer_frame = tk.Frame(window)
-trainer_frame.grid(row=0, column=0, sticky="nsew")
+    def _make_data_collector_frame(self) -> None:
+        self._data_collector_frame = tk.Frame(self)
+        self._data_collector_frame.grid(row=0, column=0, sticky="nsew")
 
 
-switch_to(config_frame)
-window.mainloop()
+view = View(None)
+view.main()
