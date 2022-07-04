@@ -1,12 +1,10 @@
 filenames:
-  data: a
-  trained_model: b
+  data: '1'
+  trained_model: '1'
 general:
   gestures:
-  - a
-  - b
-  - c
-  num_reps: 1
+  - '1'
+  num_reps: 11
   num_sensors: 1
   num_sets: 1
 hyperparams:

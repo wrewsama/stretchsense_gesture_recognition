@@ -7,6 +7,7 @@ import yaml
 
 from .peripheral import bluetooth_handler
 from .peripheral import stretchsense_peripheral as ssp
+import controller
 
 
 class DataCollector:
