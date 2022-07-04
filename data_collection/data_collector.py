@@ -77,9 +77,6 @@ class DataCollector:
         inputs = []
         targets = []
 
-        # Redirect print statements from console to tkinter text box
-        sys.stdout.write = lambda string: gui.instructions_textbox.insert(tk.INSERT, string)
-
         # Main data collection loop
         for _ in range(self._num_sets):
             # Repeat num_sets times
