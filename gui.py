@@ -100,11 +100,12 @@ class View(tk.Tk):
     def _collect_data(self) -> None:
         # Switch to instructions frame
         self._switch_to(self._instructions_frame)
-        # Call the model(datacollector)'s run method
-        for i in range(6):
-            sleep(1) # Need this to slow the changes down
-            self._controller.update_gesture('goodbye' if i%2 else 'hello')
-            self.update_idletasks()
+
+        # Load the data collector with the recently saved config file
+        self._controller.load_data_collector()
+
+        # Run the data collector
+        self._controller.run_data_collector()
         
     def _make_data_collector_frame(self) -> None:
         self._data_collector_frame = tk.Frame(self)
@@ -119,15 +120,14 @@ class View(tk.Tk):
         self._instructions_frame = tk.Frame(self)
         self._instructions_frame.grid(row=0, column=0, sticky="nsew")
 
-        self.curr_gesture = tk.StringVar()
+        self.curr_text = tk.StringVar()
 
         tk.Label(self._instructions_frame,
                  text="Current Gesture:").grid(row=0,
-                                               column=0,
-                                               sticky="w")
+                                               column=0)
 
         tk.Label(self._instructions_frame,
-                 textvariable=self.curr_gesture).grid(row=1, column=0)
+                 textvariable=self.curr_text).grid(row=1, column=0)
 
 
 

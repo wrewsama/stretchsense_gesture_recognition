@@ -7,7 +7,6 @@ import yaml
 
 from .peripheral import bluetooth_handler
 from .peripheral import stretchsense_peripheral as ssp
-import controller
 
 
 class DataCollector:
@@ -25,6 +24,8 @@ class DataCollector:
             A list of the names of the gestures to be trained.
         num_sensors:
             Number of sensors in the peripheral used for data collection.
+        controller:
+            The controller used to facilitate communication with the GUI.
     """
 
     def __init__(self,
@@ -32,7 +33,8 @@ class DataCollector:
                  num_reps: int,
                  num_sets: int,
                  gestures: List,
-                 num_sensors: int):
+                 num_sensors: int,
+                 controller):
 
         # The handler used to connect to Stretchsense peripherals via Bluetooth
         self._handler: bluetooth_handler.BluetoothHandler
@@ -45,6 +47,8 @@ class DataCollector:
         self._num_sets: int = num_sets
         self._gestures: List[str] = gestures
         self._num_sensors: int = num_sensors
+
+        self._controller = controller
 
     def run(self) -> None:
         """Handle data collection.
@@ -84,6 +88,7 @@ class DataCollector:
                 # For each gesture,
                 # Display gesture name
                 print(f"Current gesture: {gesture}")
+                self._controller.update_text(gesture)
                 time.sleep(1)
 
                 # Clear up the old sensor data

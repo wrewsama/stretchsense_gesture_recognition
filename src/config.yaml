@@ -4,8 +4,11 @@ filenames:
 general:
   gestures:
   - '1'
-  num_reps: 11
-  num_sensors: 1
+  - '6'
+  - '9'
+  - '12'
+  num_reps: 1
+  num_sensors: 7
   num_sets: 1
 hyperparams:
   batch_size: 1
