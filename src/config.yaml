@@ -11,4 +11,4 @@ hyperparams:
   batch_size: 1
   learning_capacity: 1
   lr: 1.0
-  num_epochs: 1
+  num_epochs: 11

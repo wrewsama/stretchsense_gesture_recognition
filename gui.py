@@ -19,6 +19,7 @@ class View(tk.Tk):
         self._make_data_collector_frame()
         self._make_instructions_frame()
         self._make_trainer_frame()
+        self._make_peripheral_selection_frame()
 
         # Start from config frame
         self._switch_to(self._config_frame)
@@ -102,10 +103,32 @@ class View(tk.Tk):
         self._data_collector_frame = tk.Frame(self)
         self._data_collector_frame.grid(row=0, column=0, sticky="nsew")
 
-        data_collector_btn = tk.Button(self._data_collector_frame,
+        connect_btn = tk.Button(self._data_collector_frame,
+                                    text="CONNECT",
+                                    command=self._connect_to_peripheral) # CURRENTLY JUST A DUMMY BUTTON
+        connect_btn.grid(row=0, column=0)
+
+    def _connect_to_peripheral(self) -> None:
+        """TODO"""
+        # connect
+
+        self._switch_to(self._peripheral_selection_frame)
+
+    def _make_peripheral_selection_frame(self) -> None:
+        self._peripheral_selection_frame = tk.Frame(self)
+        self._peripheral_selection_frame.grid(row=0, column=0, sticky="nsew")
+
+        tk.Label(self._peripheral_selection_frame,
+                 text="Select Peripheral:").grid(row=0,
+                                                 column=0)
+
+        peripherals = tk.Listbox(self._peripheral_selection_frame)
+        peripherals.grid(row=2, column=0)
+
+        data_collector_btn = tk.Button(self._peripheral_selection_frame,
                                     text="COLLECT DATA",
                                     command=self._collect_data)
-        data_collector_btn.grid(row=0, column=0)
+        data_collector_btn.grid(row=3, column=0)
 
     def _make_instructions_frame(self) -> None:
         self._instructions_frame = tk.Frame(self)

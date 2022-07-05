@@ -37,8 +37,6 @@ class StretchSensePeripheral(btle.Peripheral, ABC):
     def setup(self) -> None:
         """Sets up the glove for data collection."""
 
-        print(f"connected to {self._address}")
-
         # Set up delegate
         self.withDelegate(self._delegate)
 
