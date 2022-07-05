@@ -18,6 +18,7 @@ class View(tk.Tk):
         self._make_config_frame()
         self._make_data_collector_frame()
         self._make_instructions_frame()
+        self._make_trainer_frame()
 
         # Start from config frame
         self._switch_to(self._config_frame)
@@ -97,16 +98,6 @@ class View(tk.Tk):
 
         self._switch_to(self._data_collector_frame)
 
-    def _collect_data(self) -> None:
-        # Switch to instructions frame
-        self._switch_to(self._instructions_frame)
-
-        # Load the data collector with the recently saved config file
-        self._controller.load_data_collector()
-
-        # Run the data collector
-        self._controller.run_data_collector()
-        
     def _make_data_collector_frame(self) -> None:
         self._data_collector_frame = tk.Frame(self)
         self._data_collector_frame.grid(row=0, column=0, sticky="nsew")
@@ -129,5 +120,30 @@ class View(tk.Tk):
         tk.Label(self._instructions_frame,
                  textvariable=self.curr_text).grid(row=1, column=0)
 
+    def _collect_data(self) -> None:
+        # Switch to instructions frame
+        self._switch_to(self._instructions_frame)
+
+        # Load the data collector with the recently saved config file
+        self._controller.load_data_collector()
+
+        # Run the data collector
+        self._controller.run_data_collector()
+
+        self._switch_to(self._trainer_frame)
+    
+    def _make_trainer_frame(self) -> None:
+        self._trainer_frame = tk.Frame(self)
+        self._trainer_frame.grid(row=0, column=0, sticky="nsew")
+
+        tk.Label(self._trainer_frame,
+                 text="Data Collected").grid(row=0,
+                                             column=0)
+    
+        """TODO: Command"""
+        train_btn = tk.Button(self._trainer_frame,
+                                    text="TRAIN",
+                                    command=None)
+        train_btn.grid(row=1, column=0)
 
 
