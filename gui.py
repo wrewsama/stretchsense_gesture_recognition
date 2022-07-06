@@ -152,9 +152,15 @@ class View(tk.Tk):
         # Switch to instructions frame
         self._switch_to(self._instructions_frame)
 
+        # Set the description
+        tk.Label(self._instructions_frame,
+                 text="Current Gesture:").grid(row=0,
+                                               column=0)
+
         # Run the data collector
         self._controller.run_data_collector()
 
+        # Switch to trainer frame
         self._switch_to(self._trainer_frame)
     
     def _make_trainer_frame(self) -> None:

@@ -5,7 +5,6 @@ general:
   gestures:
   - a
   - b
-  - c
   num_reps: 1
   num_sensors: 7
   num_sets: 1
