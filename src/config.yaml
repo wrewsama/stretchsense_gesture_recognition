@@ -3,7 +3,9 @@ filenames:
   trained_model: '1'
 general:
   gestures:
-  - '1'
+  - a
+  - b
+  - c
   num_reps: 1
   num_sensors: 7
   num_sets: 1
@@ -11,4 +13,4 @@ hyperparams:
   batch_size: 1
   learning_capacity: 1
   lr: 1.0
-  num_epochs: 11
+  num_epochs: 1

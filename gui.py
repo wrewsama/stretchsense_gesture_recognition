@@ -97,22 +97,27 @@ class View(tk.Tk):
         with open("src/config.yaml", 'w') as configyaml:
             yaml.dump(config_dict, configyaml, default_flow_style=False)
 
-        self._switch_to(self._data_collector_frame)
+        if self._controller.load_peripheral_list():
+            self._switch_to(self._peripheral_selection_frame)
+        else:
+            """TODO"""
+            print("no peripherals")
+        
+
 
     def _make_data_collector_frame(self) -> None:
         self._data_collector_frame = tk.Frame(self)
         self._data_collector_frame.grid(row=0, column=0, sticky="nsew")
 
         connect_btn = tk.Button(self._data_collector_frame,
-                                    text="CONNECT",
-                                    command=self._connect_to_peripheral) # CURRENTLY JUST A DUMMY BUTTON
+                                text="COLLECT DATA",
+                                command=self._collect_data)
         connect_btn.grid(row=0, column=0)
 
     def _connect_to_peripheral(self) -> None:
-        """TODO"""
-        # connect
+        self._controller.connect_to_peripheral()
+        self._switch_to(self._data_collector_frame)
 
-        self._switch_to(self._peripheral_selection_frame)
 
     def _make_peripheral_selection_frame(self) -> None:
         self._peripheral_selection_frame = tk.Frame(self)
@@ -122,12 +127,12 @@ class View(tk.Tk):
                  text="Select Peripheral:").grid(row=0,
                                                  column=0)
 
-        peripherals = tk.Listbox(self._peripheral_selection_frame)
-        peripherals.grid(row=2, column=0)
+        self.peripherals = tk.Listbox(self._peripheral_selection_frame)
+        self.peripherals.grid(row=2, column=0)
 
         data_collector_btn = tk.Button(self._peripheral_selection_frame,
-                                    text="COLLECT DATA",
-                                    command=self._collect_data)
+                                    text="CONNECT",
+                                    command=self._connect_to_peripheral)
         data_collector_btn.grid(row=3, column=0)
 
     def _make_instructions_frame(self) -> None:
@@ -146,9 +151,6 @@ class View(tk.Tk):
     def _collect_data(self) -> None:
         # Switch to instructions frame
         self._switch_to(self._instructions_frame)
-
-        # Load the data collector with the recently saved config file
-        self._controller.load_data_collector()
 
         # Run the data collector
         self._controller.run_data_collector()

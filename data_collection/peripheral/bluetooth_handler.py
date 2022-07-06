@@ -95,7 +95,7 @@ class BluetoothHandlerWithGUI:
     def __init__(self, controller):
         self._controller = controller
 
-    def _get_available_peripherals(self) -> List:
+    def get_available_peripherals(self) -> List:
         """Gets a list of the available Stretchsense Peripherals."""
 
         # Create scanner
@@ -138,13 +138,10 @@ class BluetoothHandlerWithGUI:
 
         # Return the address of the selected peripheral
         return available_peripherals[selected]
-    
-    def _get_glove(self, address: str) -> ssp.StretchSensePeripheral:
-        """Returns a glove object corresponding to the given address."""
 
-        return ssp.StretchSenseGlove(address)
-
-    def connect_peripheral(self) -> Optional[ssp.StretchSensePeripheral]:
+    def connect_peripheral(
+        self,
+    ) -> ssp.StretchSensePeripheral:
         """Connect to a selected StretchSense Peripheral.
         
         Scans for available Bluetooth Low Energy devices, allows user to
@@ -152,27 +149,20 @@ class BluetoothHandlerWithGUI:
         returns it.
 
         Returns:
-            A StretchSensePeripheral object or None.
+            A StretchSensePeripheral object
         """
 
-        # Get a list of available peripherals
-        available_peripherals = self._get_available_peripherals()
+        # Get selection from user
+        addr = self._controller.get_selection()
 
-        if available_peripherals: # If list is not empty
-            # Get input from user
-            addr = self._select_peripheral(available_peripherals)
+        # Get the appropriate glove object
+        glove = ssp.StretchSenseGlove(addr)
 
-            # Get the appropriate glove object
-            glove = ssp.StretchSenseGlove(addr)
+        # Connect to glove
+        print(f"\nconnecting to addr: {addr}")
+        glove.setup()
+        print(f"connected to {addr}")
 
-            # Connect to glove
-            print(f"\nconnecting to addr: {addr}")
-            glove.setup()
-            print(f"connected to {addr}")
-
-            # Return glove object
-            return glove
-
-        else: # If list is empty (i.e. no available peripherals)
-            print(' No peripherals found.\n')
+        # Return glove object
+        return glove
     

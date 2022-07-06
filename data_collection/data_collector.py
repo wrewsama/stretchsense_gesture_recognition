@@ -50,31 +50,18 @@ class DataCollector:
 
         self._controller = controller
 
-    def run(self) -> None:
-        """Handle data collection.
-        
-        Connects to a peripheral, gets the required data from it, and save
-        it as a csv file.
-        """
+    def get_available_peripherals(self) -> List[str]:
+        self._handler = bluetooth_handler.BluetoothHandlerWithGUI(self._controller)
+        return self._handler.get_available_peripherals()
 
-        # Connect to peripheral
-        if self._connect():
-
-            # Get required data
-            inputs, targets = self._collect_data()
-
-            # Save as csv
-            self._save_csv(inputs, targets)
-    
-    def _connect(self) -> bool:
+    def connect(self) -> bool:
         """Connects to a peripheral and sets up the instance fields."""
 
-        self._handler = bluetooth_handler.BluetoothHandler()
         self._peripheral = self._handler.connect_peripheral()
 
         return self._peripheral is not None
 
-    def _collect_data(self) -> Tuple[List[List[float]], List[str]]:
+    def collect_data(self) -> Tuple[List[List[float]], List[str]]:
         """Collects the required data."""
         
         # Setting up output lists
@@ -152,29 +139,29 @@ class DataCollector:
 def main():
     """The main script for the data collection."""
 
-    # Parameter setup
-    data_file_path = ""
-    num_reps = 0
-    num_sets = 0
-    gestures = []
-    num_sensors = 0
-    with open("src/config.yaml") as config:
-        configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
-        data_file_path = f"data/{configyaml['filenames']['data']}.csv"
-        num_reps = configyaml["general"]["num_reps"]
-        num_sets = configyaml["general"]["num_sets"]
-        gestures = configyaml["general"]["gestures"]
-        num_sensors = configyaml["general"]["num_sensors"]
+    # # Parameter setup
+    # data_file_path = ""
+    # num_reps = 0
+    # num_sets = 0
+    # gestures = []
+    # num_sensors = 0
+    # with open("src/config.yaml") as config:
+    #     configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
+    #     data_file_path = f"data/{configyaml['filenames']['data']}.csv"
+    #     num_reps = configyaml["general"]["num_reps"]
+    #     num_sets = configyaml["general"]["num_sets"]
+    #     gestures = configyaml["general"]["gestures"]
+    #     num_sensors = configyaml["general"]["num_sensors"]
 
-    # Instantiate a data collector with the given parameters
-    collector = DataCollector(data_file_path,
-                              num_reps,
-                              num_sets,
-                              gestures,
-                              num_sensors)
+    # # Instantiate a data collector with the given parameters
+    # collector = DataCollector(data_file_path,
+    #                           num_reps,
+    #                           num_sets,
+    #                           gestures,
+    #                           num_sensors)
 
-    # Run the collector
-    collector.run()
+    # # Run the collector
+    # collector.run()
 
 if __name__ == "__main__":
     main()
