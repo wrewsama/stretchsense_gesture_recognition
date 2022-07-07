@@ -4,11 +4,13 @@ filenames:
 general:
   gestures:
   - '1'
-  num_reps: 1
-  num_sensors: 1
+  - '2'
+  - '3'
+  num_reps: 123
+  num_sensors: 7
   num_sets: 1
 hyperparams:
-  batch_size: 1
-  learning_capacity: 1
-  lr: 1.0
-  num_epochs: 1
+  batch_size: 32
+  learning_capacity: 32
+  lr: 0.0001
+  num_epochs: 369

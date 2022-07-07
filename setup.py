@@ -1,9 +1,7 @@
 """The controller that links the data collector and trainer to the GUI."""
-from regex import F
 import yaml
 import gui
 from data_collection import data_collector
-from typing import List
 from src import train
 from src.models import feed_forward
 import torch
