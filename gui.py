@@ -20,6 +20,7 @@ class View(tk.Tk):
         self._make_instructions_frame()
         self._make_trainer_frame()
         self._make_peripheral_selection_frame()
+        self._make_final_frame()
 
         # Start from config frame
         self._switch_to(self._config_frame)
@@ -178,5 +179,18 @@ class View(tk.Tk):
 
     def _train(self) -> None:
         self._controller.train()
+        self._switch_to(self._final_frame)
 
+    def _make_final_frame(self) -> None:
+        self._final_frame = tk.Frame(self)
+        self._final_frame.grid(row=0, column=0, sticky="nsew")
+
+        tk.Label(self._final_frame,
+                 text="Model Trained").grid(row=0,
+                                            column=0)
+    
+        train_btn = tk.Button(self._final_frame,
+                                    text="EXIT",
+                                    command=self.destroy)
+        train_btn.grid(row=1, column=0)
 
