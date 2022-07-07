@@ -61,8 +61,8 @@ class DataCollector:
 
         return self._peripheral is not None
 
-    def collect_data(self) -> Tuple[List[List[float]], List[str]]:
-        """Collects the required data."""
+    def collect_data(self) -> None:
+        """Collects and saves the required data."""
         
         # Setting up output lists
         inputs = []
@@ -107,7 +107,7 @@ class DataCollector:
                 print("gesture completed")
                 time.sleep(1)
         
-        return inputs, targets
+        self._save_csv(inputs, targets)
 
 
     def _save_csv(self,

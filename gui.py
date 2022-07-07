@@ -171,10 +171,12 @@ class View(tk.Tk):
                  text="Data Collected").grid(row=0,
                                              column=0)
     
-        """TODO: Command"""
         train_btn = tk.Button(self._trainer_frame,
                                     text="TRAIN",
-                                    command=None)
+                                    command=self._train)
         train_btn.grid(row=1, column=0)
+
+    def _train(self) -> None:
+        self._controller.train()
 
 

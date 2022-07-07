@@ -5,11 +5,11 @@ general:
   gestures:
   - a
   - b
-  num_reps: 1
+  num_reps: 12
   num_sensors: 7
   num_sets: 1
 hyperparams:
   batch_size: 1
   learning_capacity: 1
-  lr: 1.0
+  lr: 0.001
   num_epochs: 1
