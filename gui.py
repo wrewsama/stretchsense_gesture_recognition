@@ -101,8 +101,7 @@ class View(tk.Tk):
         if self._controller.load_peripheral_list():
             self._switch_to(self._peripheral_selection_frame)
         else:
-            """TODO"""
-            print("no peripherals")
+            tk.messagebox.showerror("Error", "No Available Peripherals.")
         
 
 
