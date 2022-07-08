@@ -1,4 +1,3 @@
-from time import sleep
 import tkinter as tk
 import yaml
 
@@ -8,6 +7,10 @@ class View(tk.Tk):
     
     Provides a GUI to facilitate the configuration, data collection, and
     model training processes.
+
+    Args:
+        controller:
+            The controller used to send information to this GUI.
     """
 
     def __init__(self, controller):
@@ -31,11 +34,14 @@ class View(tk.Tk):
         self.mainloop()
 
     def _switch_to(self, frame: tk.Frame) -> None:
-        """Switches to a given frame."""
+        """Switches to a given frame.
+        
+        Args:
+            frame:
+                The new frame to be displayed in the main window.
+        """
 
         frame.tkraise()
-
-    """Methods to set up config frame."""
 
     def _make_config_frame(self) -> None:
         """Create the config frame."""
@@ -65,6 +71,13 @@ class View(tk.Tk):
                             row: int) -> tk.Entry:
         """Creates the label and entry for a particular param.
     
+        Args:
+            name:
+                The name of the config parameter to be set up.
+            row:
+                The row number to insert the parameter and its associated
+                text entry box with.
+
         Returns:
             The corresponding entry instance.
         """
@@ -75,7 +88,11 @@ class View(tk.Tk):
         return entry
 
     def _confirm(self) -> None:
-        """Function that is called when the CONFIRM button is hit."""
+        """Function that is called when the CONFIRM button is hit.
+        
+        Reads the text inside the text entry boxes and saves it to the config
+        yaml file. Then changes to the peripheral selection frame.
+        """
 
         config_dict = {
             'filenames': {
@@ -98,31 +115,34 @@ class View(tk.Tk):
         with open("src/config.yaml", 'w') as configyaml:
             yaml.dump(config_dict, configyaml, default_flow_style=False)
 
+        self._load_peripheral_selection_frame()
+    
+    def _load_peripheral_selection_frame(self) -> None:
+        """Loads and switches to the peripheral selection frame.
+        
+        Loads the list of available Bluetooth peripherals and switches to
+        the peripheral selection frame for the user to choose the address to
+        connect to. If there are no peripherals available, displays an error
+        message.
+        """
+
         if self._controller.load_peripheral_list():
             self._switch_to(self._peripheral_selection_frame)
         else:
             tk.messagebox.showerror("Error", "No Available Peripherals.")
         
-
-
-    def _make_data_collector_frame(self) -> None:
-        self._data_collector_frame = tk.Frame(self)
-        self._data_collector_frame.grid(row=0, column=0, sticky="nsew")
-
-        connect_btn = tk.Button(self._data_collector_frame,
-                                text="COLLECT DATA",
-                                command=self._collect_data)
-        connect_btn.grid(row=0, column=0)
-
-    def _connect_to_peripheral(self) -> None:
-        self._controller.connect_to_peripheral()
-        self._switch_to(self._data_collector_frame)
-
-
     def _make_peripheral_selection_frame(self) -> None:
+        """Creates the frame for peripheral selection.
+        
+        This displays a listbox that lists all the available Bluetooth
+        devices, allowing the user to select one to connect to.
+        """
+
+        # Creating frame
         self._peripheral_selection_frame = tk.Frame(self)
         self._peripheral_selection_frame.grid(row=0, column=0, sticky="nsew")
 
+        # Creating the label
         tk.Label(self._peripheral_selection_frame,
                  text="Select Peripheral:").grid(row=0,
                                                  column=0)
@@ -130,21 +150,42 @@ class View(tk.Tk):
         self.peripherals = tk.Listbox(self._peripheral_selection_frame)
         self.peripherals.grid(row=2, column=0)
 
-        data_collector_btn = tk.Button(self._peripheral_selection_frame,
-                                    text="CONNECT",
-                                    command=self._connect_to_peripheral)
-        data_collector_btn.grid(row=3, column=0)
+        connect_btn = tk.Button(self._peripheral_selection_frame,
+                                text="CONNECT",
+                                command=self._connect_to_peripheral)
+        connect_btn.grid(row=3, column=0)
+
+    def _connect_to_peripheral(self) -> None:
+        """Connects to a peripheral for data collection."""
+        
+        # Connect to a bluetooth peripheral
+        self._controller.connect_to_peripheral()
+
+        # Switch to the data collector frame
+        self._switch_to(self._data_collector_frame)
+
+    def _make_data_collector_frame(self) -> None:
+        """Creates the frame to facilitate the start of data collection."""
+
+        # Create frame
+        self._data_collector_frame = tk.Frame(self)
+        self._data_collector_frame.grid(row=0, column=0, sticky="nsew")
+
+        # Create the button that starts the data collection process.
+        connect_btn = tk.Button(self._data_collector_frame,
+                                text="COLLECT DATA",
+                                command=self._collect_data)
+        connect_btn.grid(row=0, column=0)
 
     def _make_instructions_frame(self) -> None:
+        """Creates the frame containing the instructions for the user."""
+
+        # Create frame
         self._instructions_frame = tk.Frame(self)
         self._instructions_frame.grid(row=0, column=0, sticky="nsew")
 
+        # String variable used as a container for the current gesture
         self.curr_text = tk.StringVar()
-
-        tk.Label(self._instructions_frame,
-                 text="Current Gesture:").grid(row=0,
-                                               column=0)
-
         tk.Label(self._instructions_frame,
                  textvariable=self.curr_text).grid(row=1, column=0)
 
@@ -164,32 +205,47 @@ class View(tk.Tk):
         self._switch_to(self._trainer_frame)
     
     def _make_trainer_frame(self) -> None:
+        """Create the frame used to let user initiate model training."""
+
+        # Create frame
         self._trainer_frame = tk.Frame(self)
         self._trainer_frame.grid(row=0, column=0, sticky="nsew")
 
+        # Display data collected message
         tk.Label(self._trainer_frame,
                  text="Data Collected").grid(row=0,
                                              column=0)
     
+        # Button to begin training
         train_btn = tk.Button(self._trainer_frame,
                                     text="TRAIN",
                                     command=self._train)
         train_btn.grid(row=1, column=0)
 
     def _train(self) -> None:
+        """Train and save a model."""
+
+        # Train the model
         self._controller.train()
+
+        # Switch to the final frame
         self._switch_to(self._final_frame)
 
     def _make_final_frame(self) -> None:
+        """Create the final frame, indicating the completion of setup."""
+
+        # Create frame
         self._final_frame = tk.Frame(self)
         self._final_frame.grid(row=0, column=0, sticky="nsew")
 
+        # Completion message
         tk.Label(self._final_frame,
                  text="Model Trained").grid(row=0,
                                             column=0)
     
-        train_btn = tk.Button(self._final_frame,
-                                    text="EXIT",
-                                    command=self.destroy)
-        train_btn.grid(row=1, column=0)
+        # Exit button that terminates the window
+        exit_btn = tk.Button(self._final_frame,
+                             text="EXIT",
+                             command=self.destroy)
+        exit_btn.grid(row=1, column=0)
 
