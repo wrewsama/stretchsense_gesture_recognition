@@ -1,9 +1,6 @@
 import csv
-import sys
 import time
-from typing import List, Tuple
-
-import yaml
+from typing import List
 
 from .peripheral import bluetooth_handler
 from .peripheral import stretchsense_peripheral as ssp
@@ -51,14 +48,31 @@ class DataCollector:
         self._controller = controller
 
     def get_available_peripherals(self) -> List[str]:
+        """Initialises a BluetoothHandler and gets the available peripherals.
+        
+        Returns:
+            A list of strings representing the addresses of the available
+            Bluetooth peripherals.
+        """
+
+        # Initialise the handler with GUI
         self._handler = bluetooth_handler.BluetoothHandlerWithGUI(self._controller)
+
+        # Return the list of available peripherals
         return self._handler.get_available_peripherals()
 
     def connect(self) -> bool:
-        """Connects to a peripheral and sets up the instance fields."""
+        """Connects to a peripheral and stores it in the _peripheral field.
+        
+        Returns:
+            True if a peripheral was connected successfully.
+            False otherwise.
+        """
 
+        # Store the peripheral in the _peripheral field
         self._peripheral = self._handler.connect_peripheral()
 
+        # Return whether the peripheral has been successfully connected to
         return self._peripheral is not None
 
     def collect_data(self) -> None:
@@ -107,13 +121,25 @@ class DataCollector:
                 print("gesture completed")
                 time.sleep(1)
         
+        # Save the collected data as a CSV file
         self._save_csv(inputs, targets)
 
 
     def _save_csv(self,
-                    input_data: List[List[float]],
-                    target_data: List[List[str]]) -> None:
-        """Creates a csv file to store the collected data."""
+                  input_data: List[List[float]],
+                  target_data: List[List[str]]) -> None:
+        """Creates a csv file to store the collected data.
+        
+        Args:
+            input_data:
+                A list of all the entries of sensor data, each of which
+                is a list of floats representing the reading on each individual
+                sensor.
+
+            target_data:
+                A list of all the targets, each of which is a list containing
+                the gesture index(index 0) and the gesture name(index 1).
+        """
         
         # Generate headers
         headers = ["gesture_index",
@@ -135,33 +161,3 @@ class DataCollector:
                 # Each row comprises the index and name of the gesture, followed by the sensors
                 row = [*target_data[i], *input_data[i]]
                 csv_writer.writerow(row)
-
-def main():
-    """The main script for the data collection."""
-
-    # # Parameter setup
-    # data_file_path = ""
-    # num_reps = 0
-    # num_sets = 0
-    # gestures = []
-    # num_sensors = 0
-    # with open("src/config.yaml") as config:
-    #     configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
-    #     data_file_path = f"data/{configyaml['filenames']['data']}.csv"
-    #     num_reps = configyaml["general"]["num_reps"]
-    #     num_sets = configyaml["general"]["num_sets"]
-    #     gestures = configyaml["general"]["gestures"]
-    #     num_sensors = configyaml["general"]["num_sensors"]
-
-    # # Instantiate a data collector with the given parameters
-    # collector = DataCollector(data_file_path,
-    #                           num_reps,
-    #                           num_sets,
-    #                           gestures,
-    #                           num_sensors)
-
-    # # Run the collector
-    # collector.run()
-
-if __name__ == "__main__":
-    main()
