@@ -190,6 +190,8 @@ class View(tk.Tk):
                  textvariable=self.curr_text).grid(row=1, column=0)
 
     def _collect_data(self) -> None:
+        """Displays the data collection instructions."""
+        
         # Switch to instructions frame
         self._switch_to(self._instructions_frame)
 
