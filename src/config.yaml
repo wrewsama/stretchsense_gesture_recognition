@@ -3,13 +3,14 @@ filenames:
   trained_model: '1'
 general:
   gestures:
-  - a
-  - b
-  num_reps: 1
+  - rock
+  - paper
+  - scissors
+  num_reps: 500
   num_sensors: 7
-  num_sets: 1
+  num_sets: 2
 hyperparams:
-  batch_size: 1
-  learning_capacity: 1
-  lr: 1.0
-  num_epochs: 1
+  batch_size: 32
+  learning_capacity: 32
+  lr: 1.0e-05
+  num_epochs: 500
