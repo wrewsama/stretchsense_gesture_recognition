@@ -76,12 +76,21 @@ class View(tk.Tk):
 
             self._num_reps.insert(0, configyaml["general"]["num_reps"])
             self._num_sets.insert(0, configyaml["general"]["num_sets"])
-            self._gestures.insert(0, configyaml["general"]["gestures"])
+            gestures = configyaml["general"]["gestures"]
+            self._gestures.insert(0, ", ".join(gestures))
             self._num_sensors.insert(0, configyaml["general"]["num_sensors"])
 
-        # Confirm button
-        self._confirm_btn = tk.Button(self._config_frame, text="CONFIRM", command=self._confirm)
-        self._confirm_btn.grid(row=10, column=0, columnspan=2)
+        # Data collection button
+        collect_btn = tk.Button(self._config_frame, text="COLLECT DATA", command=self._confirm)
+        collect_btn.grid(row=10, column=0)
+
+        # Train button
+        train_btn = tk.Button(self._config_frame, text="TRAIN", command=self._train)
+        train_btn.grid(row=10, column=1)
+
+        # Save and exit button
+        exit_btn = tk.Button(self._config_frame, text="SAVE & EXIT", command=self._save_and_exit)
+        exit_btn.grid(row=10, column=2)
 
     def _create_entry_param(self,
                             name: str,
@@ -101,7 +110,7 @@ class View(tk.Tk):
 
         tk.Label(self._config_frame, text=name).grid(row=row, column=0, sticky="w")
         entry = tk.Entry(self._config_frame)
-        entry.grid(row=row, column=1, sticky="e")
+        entry.grid(row=row, column=1, sticky="e", columnspan=2)
         return entry
 
     def _confirm(self) -> None:
@@ -111,6 +120,19 @@ class View(tk.Tk):
         yaml file. Then changes to the peripheral selection frame.
         """
 
+        # Save the config parameters
+        self._save_config()
+        
+        # Load new frame
+        self._load_peripheral_selection_frame()
+
+    def _save_and_exit(self) -> None:
+        """Save config and exit setup."""
+        
+        self._save_config()
+        self.destroy()
+
+    def _save_config(self) -> None:
         config_dict = {
             'filenames': {
                 'data': self._data.get(),
@@ -132,7 +154,6 @@ class View(tk.Tk):
         with open("src/config.yaml", 'w') as configyaml:
             yaml.dump(config_dict, configyaml, default_flow_style=False)
 
-        self._load_peripheral_selection_frame()
     
     def _load_peripheral_selection_frame(self) -> None:
         """Loads and switches to the peripheral selection frame.

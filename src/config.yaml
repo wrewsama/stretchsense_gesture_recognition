@@ -12,5 +12,5 @@ general:
 hyperparams:
   batch_size: 32
   learning_capacity: 32
-  lr: 1.0e-05
+  lr: 0.0001
   num_epochs: 500
