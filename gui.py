@@ -62,6 +62,23 @@ class View(tk.Tk):
         self._num_reps = self._create_entry_param("number of repetitions: ", 8)
         self._num_sets = self._create_entry_param("number of sets: ", 9)
 
+        # Updating the default values
+        with open("src/config.yaml") as config:
+            configyaml = yaml.load(config, Loader=yaml.loader.FullLoader)
+
+            self._data.insert(0, configyaml['filenames']['data'])
+            self._trained_model.insert(0, configyaml['filenames']['trained_model'])
+
+            self._num_epochs.insert(0, configyaml["hyperparams"]["num_epochs"])
+            self._lr.insert(0, configyaml["hyperparams"]["lr"])
+            self._batch_size.insert(0, configyaml["hyperparams"]["batch_size"])
+            self._learning_capacity.insert(0, configyaml["hyperparams"]["learning_capacity"])
+
+            self._num_reps.insert(0, configyaml["general"]["num_reps"])
+            self._num_sets.insert(0, configyaml["general"]["num_sets"])
+            self._gestures.insert(0, configyaml["general"]["gestures"])
+            self._num_sensors.insert(0, configyaml["general"]["num_sensors"])
+
         # Confirm button
         self._confirm_btn = tk.Button(self._config_frame, text="CONFIRM", command=self._confirm)
         self._confirm_btn.grid(row=10, column=0, columnspan=2)
