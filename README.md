@@ -61,14 +61,16 @@ Inside `src/config.yaml`, you can choose the:
 * filenames
   * data - The name of the raw data file both to store the data collected by the DataCollector and to be used by the Trainer to train the model.
   * trained_model - The name of the file storing the parameters of the model trained by the Trainer.
-* Hyperparameters including:
-    * Number of epochs
-    * Learning rate
-    * Batch size
-    * Learning capacity
-* Number of sensors on the peripheral
-* The list of gestures
-* Number of repetitions and sets of data to be collected for each gesture
+* hyperparams - for training the model
+  * num_epochs - The number of epochs
+  * lr - Learning rate
+  * batch_size - size of each batch of data loaded by the dataloader
+  * learning_capacity - size of the hidden layer
+* general
+  * num_sensors - Number of sensors on the peripheral
+  * gestures - A list of gestures
+  * num_sets - Number of sets of data to be collected for each gesture
+  * num_reps - Number of repetitions per set of data
 
 Or, this can be done through the GUI in `setup.py`
 
