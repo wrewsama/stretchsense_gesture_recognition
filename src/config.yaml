@@ -3,12 +3,15 @@ filenames:
   trained_model: example_model
 general:
   gestures:
-  - rock
-  - paper
-  - scissors
+  - rest
+  - flexion
+  - extension
+  - adduction
+  - abduction
+  - rotation
   num_reps: 500
-  num_sensors: 7
-  num_sets: 2
+  num_sensors: 10
+  num_sets: 1
 hyperparams:
   batch_size: 128
   learning_capacity: 32

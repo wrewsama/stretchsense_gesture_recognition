@@ -66,7 +66,7 @@ class StretchSensePeripheral(btle.Peripheral, ABC):
         if self.waitForNotifications(1.0):
             # Read capacitance values from delegate
             cap = self._delegate.capacitance
-
+            
             # Return values if it has the correct dimensions
             if len(cap) == self.NUM_SENSORS:
                 return cap

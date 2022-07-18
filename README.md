@@ -58,8 +58,9 @@ An example use of the gesture recognition API to play a simple game of Rock Pape
 
 ### Config File
 Inside `src/config.yaml`, you can choose the:
-* Raw data file name
-* Trained model file name
+* filenames
+  * data - The name of the raw data file both to store the data collected by the DataCollector and to be used by the Trainer to train the model.
+  * trained_model - The name of the file storing the parameters of the model trained by the Trainer.
 * Hyperparameters including:
     * Number of epochs
     * Learning rate
