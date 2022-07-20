@@ -4,10 +4,12 @@ This project aims to provide an API to take in sensor readings from a StretchSen
 It comprises:
 1. A data collection script for the collection of training data from the peripheral.
 2. A training script to train a Machine Learning model to recognise gestures based on the sensor data from the device.
-3. An API that allows the user to connect to a StretchSense device and get the recognised gesture.
-4. A simple example script utilising the API to play a game of Rock Paper Scissors.
+3. A Graphical User Interface facilitating both the data collection and model training processes.
+4. An API that allows the user to connect to a StretchSense device and get the recognised gesture.
+5. A simple example script utilising the API to read and print the detected gestures.
+6. Another example script that uses the API to play a game of Rock Paper Scissors.
 
-The file paths to store the collected raw data and trained model, the hyperparameters for machine learning, and the list of gestures to be trained and recognised can be easily adapted to the user's needs by editing the `src/config.yaml` file.
+The file paths to store the collected raw data and trained model, the hyperparameters for machine learning, and the list of gestures to be trained and recognised can be easily adapted to the user's needs through the GUI provided in `setup.py`, or by editing the `src/config.yaml` file directly.
 
 ## Table of Contents
 1. [Technologies Used](#technologies-used)
@@ -17,7 +19,7 @@ The file paths to store the collected raw data and trained model, the hyperparam
     * [Setup](#setup)
     * [API](#api)
     * [Example 1](#example)
-    * [Example 2](#example2---rock-paper-scissors)
+    * [Example 2](#example-2---rock-paper-scissors)
 4. [Models](#models)
     * [Simple Logistic Regression](#1-simple-logistic-regression)
     * [Feed Forward](#2-feed-forward-network-with-one-hidden-layer)
@@ -61,10 +63,10 @@ An example use of the gesture recognition API to play a simple game of Rock Pape
 ```
 $ python3 setup.py
 ```
-2. Select the config parameters.
+2. Select the [config parameters](#config-file).
 3. Choose whether to:
   * `COLLECT` a new data set (go to step 4).
-  * `TRAIN` a model using the data set located in data file path
+  * `TRAIN` a model using the data set located in data file path (go to step 8)
   * `SAVE & EXIT`
 4. Select the address of the desired Stretchsense peripheral from the list box and click `CONNECT`.
 5. Click on `COLLECT DATA` to begin the data collection process.
@@ -73,7 +75,7 @@ $ python3 setup.py
 8. Click on `EXIT` to exit
 
 ### Config File
-Inside `src/config.yaml`, you can choose the:
+Inside `src/config.yaml`, you can choose:
 * filenames
   * data - The name of the raw data file both to store the data collected by the DataCollector and to be used by the Trainer to train the model.
   * trained_model - The name of the file storing the parameters of the model trained by the Trainer.
@@ -121,7 +123,7 @@ $ python3 example.py
 4. Press the ENTER key. The detected gesture will be printed on the the command line.
 5. Enter 'n' into the command line to exit.
 
-### Example2 - Rock Paper Scissors
+### Example 2 - Rock Paper Scissors
 1. Inside `src/config.yaml`, use the following parameters:
 ```yaml
 filenames:
