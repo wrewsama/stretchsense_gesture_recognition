@@ -4,20 +4,22 @@ This project aims to provide an API to take in sensor readings from a StretchSen
 It comprises:
 1. A data collection script for the collection of training data from the peripheral.
 2. A training script to train a Machine Learning model to recognise gestures based on the sensor data from the device.
-3. An API that allows the user to connect to a StretchSense device and get the recognised gesture.
-4. A simple example script utilising the API to play a game of Rock Paper Scissors.
+3. A Graphical User Interface facilitating both the data collection and model training processes.
+4. An API that allows the user to connect to a StretchSense device and get the recognised gesture.
+5. A simple example script utilising the API to read and print the detected gestures.
+6. Another example script that uses the API to play a game of Rock Paper Scissors.
 
-The file paths to store the collected raw data and trained model, the hyperparameters for machine learning, and the list of gestures to be trained and recognised can be easily adapted to the user's needs by editing the `src/config.yaml` file.
+The file paths to store the collected raw data and trained model, the hyperparameters for machine learning, and the list of gestures to be trained and recognised can be easily adapted to the user's needs through the GUI provided in `setup.py`, or by editing the `src/config.yaml` file directly.
 
 ## Table of Contents
 1. [Technologies Used](#technologies-used)
 2. [Installation](#installation)
 3. [Usage](#usage)
     * [Config File](#config-file)
-    * [Data Collector](#data-collector)
-    * [Trainer](#trainer)
+    * [Setup](#setup)
     * [API](#api)
-    * [Example use of API](#example---rock-paper-scissors)
+    * [Example 1](#example)
+    * [Example 2](#example-2---rock-paper-scissors)
 4. [Models](#models)
     * [Simple Logistic Regression](#1-simple-logistic-regression)
     * [Feed Forward](#2-feed-forward-network-with-one-hidden-layer)
@@ -54,47 +56,41 @@ $ sudo setcap 'cap_net_raw,cap_net_admin+eip' bluepy-helper
 ```
 
 ## Usage
-An example use of the gesture recognition API to play a simple game of Rock Paper Scissors has been included in the `example.py` script. Configuration details, as well as instructions to train the model can be found in the docstring at the beginning of the script.
+An example use of the gesture recognition API to play a simple game of Rock Paper Scissors has been included in the `example2.py` script. Configuration details, as well as instructions to train the model can be found in the docstring at the beginning of the script.
+
+### Setup
+1. Run the setup script with:
+```
+$ python3 setup.py
+```
+2. Select the [config parameters](#config-file).
+3. Choose whether to:
+  * `COLLECT` a new data set (go to step 4).
+  * `TRAIN` a model using the data set located in data file path (go to step 8)
+  * `SAVE & EXIT`
+4. Select the address of the desired Stretchsense peripheral from the list box and click `CONNECT`.
+5. Click on `COLLECT DATA` to begin the data collection process.
+6. Follow the gestures displayed on the GUI.
+7. Click on `TRAIN` to begin training the model.
+8. Click on `EXIT` to exit
 
 ### Config File
-Inside `src/config.yaml`, choose the:
-* Raw data file name
-* Trained model file name
-* Hyperparameters including:
-    * Number of epochs
-    * Learning rate
-    * Batch size
-    * Learning capacity
-* Number of sensors on the peripheral
-* The list of gestures
-* Number of repetitions and sets of data to be collected for each gesture
+Inside `src/config.yaml`, you can choose:
+* filenames
+  * data - The name of the raw data file both to store the data collected by the DataCollector and to be used by the Trainer to train the model.
+  * trained_model - The name of the file storing the parameters of the model trained by the Trainer.
+* hyperparams - for training the model
+  * num_epochs - The number of epochs
+  * lr - Learning rate
+  * batch_size - size of each batch of data loaded by the dataloader
+  * learning_capacity - size of the hidden layer
+* general
+  * num_sensors - Number of sensors on the peripheral
+  * gestures - A list of gestures
+  * num_sets - Number of sets of data to be collected for each gesture
+  * num_reps - Number of repetitions per set of data
 
-### Data Collector
-1. Inside `src/config.yaml`, choose the:
-    * Raw data file name
-    * List of gestures
-    * Number of repetitions and sets of data to be collected for each gesture
-2. Switch on the Stretchsense peripheral.
-3. Run the data collector script with:
-```
-$ python3 data_collection/data_collector.py
-```
-4. Select the peripheral by entering its corresponding number in the command line.
-5. When prompted, make the gestures shown and **hold** them until the prompt states the gesture has been completed.
-6. The data file will be stored in `data/<filename>.csv` where `filename` is the chosen raw data file name entered in `src/config.yaml`
-
-### Trainer
-1. Inside `src/config.yaml`, choose the:
-    * Hyperparameters
-    * File name of the raw data for training
-    * File name of the file to store the trained model in
-    * Number of sensors
-2. Run the trainer script with:
-```
-$ python3 src/train.py
-```
-3. The accuracy and loss for every 10 epochs will be displayed in the command line and as a graph at the end of the training.
-4. The trained model will be saved in `trained_models/<filename>.pth` where `filename` is the chosen trained model file name entered in `src/config.yaml`.
+Or, this can be done through the GUI in `setup.py`
 
 ### API
 The app can be imported with:
@@ -117,22 +113,27 @@ api.read_gesture()
 ```
 This will return a string containing the name of the detected gesture.
 
-### Example - Rock Paper Scissors
+### Example
+1. Complete the setup by [running `setup.py`](#setup).
+2. Run the example using:
+```
+$ python3 example.py
+```
+3. Select the peripheral by entering its corresponding number in the command line.
+4. Press the ENTER key. The detected gesture will be printed on the the command line.
+5. Enter 'n' into the command line to exit.
+
+### Example 2 - Rock Paper Scissors
 1. Inside `src/config.yaml`, use the following parameters:
 ```yaml
-# Names of particular files to be created
 filenames:
   data: example_dataset
   trained_model: example_model
-
-# Hyperparameters for machine learning
 hyperparams:
   num_epochs: 500
   lr: 0.00001
   batch_size: 128
   learning_capacity: 32
-
-# General parameters
 general: 
   num_sensors: 7
   gestures:
@@ -146,7 +147,7 @@ general:
 3. Run the [Trainer](#trainer)
 4. Run the example script using:
 ```
-$ python3 example.py
+$ python3 example2.py
 ```
 5. Select the peripheral by entering its corresponding number in the command line.
 6. Make your move and press the `ENTER` key

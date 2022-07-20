@@ -1,21 +1,19 @@
-#  Names of particular files to be created
 filenames:
   data: example_dataset
   trained_model: example_model
-
-# Hyperparameters for machine learning
+general:
+  gestures:
+  - rest
+  - flexion
+  - extension
+  - adduction
+  - abduction
+  - rotation
+  num_reps: 500
+  num_sensors: 10
+  num_sets: 1
 hyperparams:
-  num_epochs: 500
-  lr: 0.00001
   batch_size: 128
   learning_capacity: 32
-
-# General parameters
-general: 
-  num_sensors: 7
-  gestures:
-    - rock
-    - paper
-    - scissors
-  num_reps: 500
-  num_sets: 1
+  lr: 0.0001
+  num_epochs: 500

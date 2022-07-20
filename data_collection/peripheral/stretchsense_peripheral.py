@@ -37,8 +37,6 @@ class StretchSensePeripheral(btle.Peripheral, ABC):
     def setup(self) -> None:
         """Sets up the glove for data collection."""
 
-        print(f"connected to {self._address}")
-
         # Set up delegate
         self.withDelegate(self._delegate)
 
@@ -68,7 +66,7 @@ class StretchSensePeripheral(btle.Peripheral, ABC):
         if self.waitForNotifications(1.0):
             # Read capacitance values from delegate
             cap = self._delegate.capacitance
-
+            
             # Return values if it has the correct dimensions
             if len(cap) == self.NUM_SENSORS:
                 return cap

@@ -4,9 +4,10 @@ from torch.utils.data import random_split, DataLoader
 from typing import List, Dict
 
 import yaml
-from models import feed_forward
-import dataset
 import matplotlib.pyplot as plt
+
+from .models import feed_forward
+from . import dataset
 
 class Trainer:
     """This class is responsible for training a selected model.
