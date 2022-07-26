@@ -3,15 +3,14 @@ filenames:
   trained_model: example_model
 general:
   gestures:
-  - rest
-  - flexion
-  - extension
-  - adduction
-  - abduction
-  - rotation
+  - stop
+  - forward
+  - backward
+  - left
+  - right
   num_reps: 500
-  num_sensors: 10
-  num_sets: 1
+  num_sensors: 7
+  num_sets: 2
 hyperparams:
   batch_size: 128
   learning_capacity: 32
