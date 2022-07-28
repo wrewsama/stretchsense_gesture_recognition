@@ -13,14 +13,14 @@ class VirgoTeleopController:
         self._q = mp.Queue(1)
 
         # Functions to execute
-        # self.init_serial()
+        self.init_serial()
         self.set_up_glove()
 
-        # initialise processes
+        # Initialise threads for parallel processing
         glove_reader = Thread(target=self.get_gesture)
         direction_publisher = Thread(target=self.run_glove)
 
-        # Begin the processes
+        # Start threads
         glove_reader.start()
         direction_publisher.start()
 
@@ -54,9 +54,9 @@ class VirgoTeleopController:
                 left = (100 * curr_direction[0] + 100).to_bytes(1, "big")
                 right = (100 * curr_direction[1] + 100).to_bytes(1, "big")
 
-                # self.ser.write(bytes.fromhex('FF'))
-                # self.ser.write(left)
-                # self.ser.write(right)
+                self.ser.write(bytes.fromhex('FF'))
+                self.ser.write(left)
+                self.ser.write(right)
 
         except KeyboardInterrupt:
             print("Exiting publisher...")
@@ -86,7 +86,11 @@ class VirgoTeleopController:
             "forward": (1, 1),
             "backward": (-1, -1),
             "left": (1, -1),
-            "right": (-1, 1)
+            "right": (-1, 1),
+            "forward right": (0, 1),
+            "forward left": (1, 0),
+            "backward right": (-1, 0),
+            "backward left": (0, -1)
         }
 
         self._q.put(inputs[gesture])

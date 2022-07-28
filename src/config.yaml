@@ -1,6 +1,6 @@
 filenames:
-  data: example_dataset
-  trained_model: example_model
+  data: virgo
+  trained_model: virgo
 general:
   gestures:
   - stop
@@ -8,9 +8,13 @@ general:
   - backward
   - left
   - right
+  - forward right
+  - forward left
+  - backward right
+  - backward left
   num_reps: 500
   num_sensors: 7
-  num_sets: 2
+  num_sets: 1
 hyperparams:
   batch_size: 128
   learning_capacity: 32
