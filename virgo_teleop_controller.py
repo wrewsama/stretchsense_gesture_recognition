@@ -13,7 +13,7 @@ class VirgoTeleopController:
         self._q = mp.Queue(1)
 
         # Functions to execute
-        self.init_serial()
+        # self.init_serial()
         self.set_up_glove()
 
         # initialise processes
@@ -54,9 +54,9 @@ class VirgoTeleopController:
                 left = (100 * curr_direction[0] + 100).to_bytes(1, "big")
                 right = (100 * curr_direction[1] + 100).to_bytes(1, "big")
 
-                self.ser.write(bytes.fromhex('FF'))
-                self.ser.write(left)
-                self.ser.write(right)
+                # self.ser.write(bytes.fromhex('FF'))
+                # self.ser.write(left)
+                # self.ser.write(right)
 
         except KeyboardInterrupt:
             print("Exiting publisher...")
@@ -68,7 +68,7 @@ class VirgoTeleopController:
 
         try:
             while True:
-                gesture = self._api.read_gesture()
+                gesture = self._api.read_gesture_fast()
                 
                 self.update_direction(gesture)
 
