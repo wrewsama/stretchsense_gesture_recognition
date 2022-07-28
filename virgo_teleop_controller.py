@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from threading import Thread
+import multiprocessing as mp
 import serial
 import gesture_recognition_api
 
@@ -7,10 +9,20 @@ class VirgoTeleopController:
         # API for gesture recognition
         self._api = gesture_recognition_api.API()
 
+        # Container queue to store the current direction
+        self._q = mp.Queue(1)
+
         # Functions to execute
-        # self.init_serial()
+        self.init_serial()
         self.set_up_glove()
-        self.run_glove()
+
+        # initialise processes
+        glove_reader = Thread(target=self.get_gesture)
+        direction_publisher = Thread(target=self.run_glove)
+
+        # Begin the processes
+        glove_reader.start()
+        direction_publisher.start()
 
     def init_serial(self):
         self.ser = serial.Serial(
@@ -25,97 +37,59 @@ class VirgoTeleopController:
     def set_up_glove(self) -> None:
         self._api.setup()
 
-    
-    # def run_joystick(self):
-    #     try:
-    #         print('Press CTRL+C to quit')
-    #         running = True
-    #         hadEvent = False
-    #         upDown = 0.0
-    #         leftRight = 0.0
-    #         driveLeft = 0
-    #         driveRight = 0
- 
-    #         # Loop indefinitely
-    #         while running:
-    #             # Get the latest events from the system
-    #             hadEvent = False
-    #             events = pygame.event.get()
-    #             # Handle each event individually
-    #             for event in events:
-    #                 if event.type == pygame.QUIT:
-    #                     # User exit
-    #                     running = False
-    #                 elif event.type == pygame.JOYBUTTONDOWN:
-    #                     # A button on the joystick just got pushed down
-    #                     print('joystick: %d, button: %d' %(event.joy, event.button))
-    #                     hadEvent = True
-
-    #                 elif event.type == pygame.JOYAXISMOTION:
-    #                     # A joystick has been moved
-    #                     print('event.joy: %d, event.axis: %d' %(event.joy, event.axis))
-    #                     hadEvent = True
-
-    #                 if hadEvent:
-
-    #                     LT_value = self.joystick.get_axis(self.LT)
-    #                     if (LT_value == -1.0):
-    #                         # Read axis positions (-1 to +1)
-    #                         if self.axisUpDownInverted:
-    #                             upDown = -self.joystick.get_axis(
-    #                                 self.axisUpDown)
-    #                         else:
-    #                             upDown = self.joystick.get_axis(
-    #                                 self.axisUpDown)
-    #                         # print("upDown: ",upDown)
-    #                         if self.axisLeftRightInverted:
-    #                             leftRight = -self.joystick.get_axis(
-    #                                 self.axisLeftRight)
-    #                         else:
-    #                             leftRight = self.joystick.get_axis(
-    #                                 self.axisLeftRight)
-    #                     else:
-    #                         upDown = 0.0
-    #                         leftRight = 0.0
-    #                     (driveLeft, driveRight) = steering(upDown, leftRight)
-
-
-    #             _driveLeft = int(driveLeft * 100 + 100).to_bytes(1, "big")
-    #             _driveRight = int(driveRight * 100 + 100).to_bytes(1, "big")
-    #             n = self.ser.write(bytes.fromhex('FF'))
-    #             n = self.ser.write(_driveLeft)
-    #             n = self.ser.write(_driveRight)
-
-    #     except KeyboardInterrupt:
-    #         self.ser.close()
-    #         exit()
-
     def run_glove(self):
         """Gets the user input from the glove and outputs it to the serial."""
 
         try:
             print('Press CTRL+C to quit')
-            driveLeft = 0
-            driveRight = 0
 
+            curr_direction = (0, 0)
             while True:
+                if not self._q.empty():
+                    # get the updated direction
+                    curr_direction = self._q.get()         
 
-                gesture = self._api.read_gesture()
-                inputs = {
-                    "stop": (0, 0),
-                    "forward": (1, 1),
-                    "backward": (-1, -1),
-                    "left": (1, -1),
-                    "right": (-1, 1)
-                }
+                # Publish
+                print(curr_direction) # will be replaced by some function to publish to serial
+                left = (100 * curr_direction[0] + 100).to_bytes(1, "big")
+                right = (100 * curr_direction[1] + 100).to_bytes(1, "big")
 
-                (driveLeft, driveRight) = inputs[gesture]
-                print(inputs[gesture])
+                self.ser.write(bytes.fromhex('FF'))
+                self.ser.write(left)
+                self.ser.write(right)
 
         except KeyboardInterrupt:
-            print("Exiting...")
+            print("Exiting publisher...")
             self.ser.close()
             exit()
+
+    def get_gesture(self):
+        """Reads the user's gesture."""
+
+        try:
+            while True:
+                gesture = self._api.read_gesture()
+                
+                self.update_direction(gesture)
+
+        except KeyboardInterrupt:
+            print("Exiting reader...")
+
+    def update_direction(self, gesture: str):
+        """Updates queue with the current direction.
+        
+        Takes in a gesture and pushes a tuple
+        """
+
+        inputs = {
+            "stop": (0, 0),
+            "forward": (1, 1),
+            "backward": (-1, -1),
+            "left": (1, -1),
+            "right": (-1, 1)
+        }
+
+        self._q.put(inputs[gesture])
 
 if __name__ == '__main__':
     VirgoTeleopController()
