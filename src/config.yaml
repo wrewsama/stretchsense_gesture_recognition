@@ -1,17 +1,11 @@
 filenames:
-  data: virgo
-  trained_model: virgo
+  data: test
+  trained_model: test
 general:
   gestures:
-  - stop
-  - forward
-  - backward
-  - left
-  - right
-  - forward right
-  - forward left
-  - backward right
-  - backward left
+  - one
+  - two
+  - three
   num_reps: 500
   num_sensors: 7
   num_sets: 1

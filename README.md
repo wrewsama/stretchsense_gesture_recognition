@@ -23,7 +23,8 @@ The file paths to store the collected raw data and trained model, the hyperparam
 4. [Models](#models)
     * [Simple Logistic Regression](#1-simple-logistic-regression)
     * [Feed Forward](#2-feed-forward-network-with-one-hidden-layer)
-5. [Credits](#credits)
+5. [Modifications]()
+6. [Credits](#credits)
 
 ## Technologies Used
 This project utilises the following technologies:
@@ -171,6 +172,24 @@ Reaches 99% accuracy after approximately 200 epochs
 ![graph](https://i.ibb.co/WBXPTPP/Screenshot-from-2022-06-21-14-45-05.png) 
 
 Reaches 99% accuracy after about 30 epochs
+
+## Modifications
+Instructions for possible modifications to the codebase.
+
+### Changing Model
+1. Add the model as a new module inside the `src/models` package.
+2. Go to `setup.py`
+3. Import that model using:
+```python
+from src.models import MODELNAME 
+```
+where `MODELNAME` is the name of the module containing the new model.
+4. Inside the `_load_trainer()` method, change the `self._model` field to the new model
+
+
+### Adding new sensors to peripheral
+1. Go to `data_collection/peripheral/stretchsense_peripheral`
+2. Modify the `read_sensors()` method inside the `StretchSensePeripheral` class to include the new sensor data
 
 ## Credits
 Andrew Lo Zhi Sheng 
