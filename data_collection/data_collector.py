@@ -1,6 +1,7 @@
 import csv
 import time
 from typing import List
+from datetime import datetime
 
 from .peripheral import bluetooth_handler
 from .peripheral import stretchsense_peripheral as ssp
@@ -81,6 +82,7 @@ class DataCollector:
         # Setting up output lists
         inputs = []
         targets = []
+        timestamps = []
 
         # Main data collection loop
         for _ in range(self._num_sets):
@@ -115,6 +117,9 @@ class DataCollector:
                     # Update inputs as lists
                     inputs.append(sensor_input.tolist())
 
+                    # Update timestamp
+                    timestamps.append(str(datetime.now()))
+
                     # Increment counter
                     rep_count += 1
                 
@@ -122,12 +127,13 @@ class DataCollector:
                 time.sleep(1)
         
         # Save the collected data as a CSV file
-        self._save_csv(inputs, targets)
+        self._save_csv(inputs, targets, timestamps)
 
 
     def _save_csv(self,
                   input_data: List[List[float]],
-                  target_data: List[List[str]]) -> None:
+                  target_data: List[List[str]],
+                  timestamps: List[str]) -> None:
         """Creates a csv file to store the collected data.
         
         Args:
@@ -139,6 +145,10 @@ class DataCollector:
             target_data:
                 A list of all the targets, each of which is a list containing
                 the gesture index(index 0) and the gesture name(index 1).
+
+            timestamps:
+                A list of all the timestamps corresponding to the data
+                collected.
         """
         
         # Generate headers
@@ -146,6 +156,7 @@ class DataCollector:
                    "gesture_name"]
         for i in range(1, self._num_sensors + 1):
             headers.append(f"sensor{i}")
+        headers.append("timestamp")
 
         # Write to given file path
         with open(f"{self._filepath}", "w+") as data_file:
@@ -158,6 +169,7 @@ class DataCollector:
             # Write for each sample
             total_num_samples = self._num_reps * self._num_sets * len(self._gestures)
             for i in range(total_num_samples):
-                # Each row comprises the index and name of the gesture, followed by the sensors
-                row = [*target_data[i], *input_data[i]]
+                # Each row comprises the index and name of the gesture,
+                # followed by the sensors, and then the timestamp
+                row = [*target_data[i], *input_data[i], timestamps[i]]
                 csv_writer.writerow(row)

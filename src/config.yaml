@@ -1,16 +1,13 @@
 filenames:
-  data: example_dataset
-  trained_model: example_model
+  data: test
+  trained_model: test
 general:
   gestures:
-  - rest
-  - flexion
-  - extension
-  - adduction
-  - abduction
-  - rotation
+  - one
+  - two
+  - three
   num_reps: 500
-  num_sensors: 10
+  num_sensors: 7
   num_sets: 1
 hyperparams:
   batch_size: 128

@@ -97,6 +97,8 @@ class API:
         self._gestures = gestures
 
     def read_gesture(self) -> str:
+        """Gets the current gesture as a string."""
+
         # Get input data from the peripheral
         testdata = self._get_input()
 
@@ -124,6 +126,41 @@ class API:
             self._peripheral.read_sensors()
 
         # Take new sensor readings until a non-nil reading is obtained
+        data = None
+        while data is None:
+            data = self._peripheral.read_sensors()
+
+        # Convert to list and return
+        return data.tolist()
+
+    def read_gesture_fast(self) -> str:
+        """Gets the gesture as a string. Faster but poor accuracy."""
+        # Get input data from the peripheral
+        testdata = self._get_input_fast()
+
+        # Generate the prediction using the model
+        output = self._model(torch.tensor(testdata))
+        resultidx = torch.argmax(output).item()
+        result = self._gestures[resultidx]
+        
+        # Return the prediction
+        return result
+
+    def _get_input_fast(self) -> List[int]:
+        """Gets the input data from the connected peripheral.
+
+        Gets the data without clearing the old readings to increase speed
+        at the cost of accuracy.
+        
+        Args:
+            peripheral:
+                The Stretchsense peripheral whose sensor data needs to be read.
+
+        Returns:
+            A list of integers representing the sensor data.
+        """
+
+         # Take new sensor readings until a non-nil reading is obtained
         data = None
         while data is None:
             data = self._peripheral.read_sensors()
